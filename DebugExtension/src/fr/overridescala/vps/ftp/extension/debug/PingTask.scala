@@ -10,6 +10,10 @@ class PingTask(private val targetId: String) extends Task[Long](targetId) {
     override val initInfo: TaskInitInfo =
         TaskInitInfo.of(Type, targetId)
 
+
+    /**
+     * adding some scala doc in order to commit something
+     * */
     override def execute(): Unit = {
         println(s"(channel id ${channel.channelID})")
         channel.sendPacket(EmptyPacket)
