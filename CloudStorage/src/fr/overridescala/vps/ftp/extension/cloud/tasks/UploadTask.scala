@@ -24,7 +24,9 @@ class UploadTask(private val desc: TransferDescription)
 
     override val initInfo: TaskInitInfo =
         TaskInitInfo.of(TYPE, desc.targetID, Utils.serialize(desc))
-
+    /**
+     * useless doc check
+     * */
     override def execute(): Unit = {
         this.channel = channel
         val source = Paths.get(desc.source)
