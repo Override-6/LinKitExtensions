@@ -1,10 +1,10 @@
 package fr.overridescala.linkkit.`extension`.debug
 
-import fr.overridescala.linkkit.api.packet.PacketChannel
 import fr.overridescala.linkkit.api.packet.fundamental.{DataPacket, TaskInitPacket}
 import fr.overridescala.linkkit.api.task.{Task, TaskExecutor, TaskInitInfo}
 import fr.overridescala.linkkit.api.utils.Constants
 import StressTestTask.{Type, download, upload}
+import fr.overridescala.linkkit.api.packet.channel.PacketChannel
 
 /**
  * This is a Test task, will not be documented.

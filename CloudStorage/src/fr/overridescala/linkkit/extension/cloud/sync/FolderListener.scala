@@ -2,7 +2,7 @@ package fr.overridescala.linkkit.`extension`.cloud.sync
 
 import java.nio.file.{FileSystemException, Files, Path}
 
-import fr.overridescala.linkkit.api.packet.PacketChannel
+import fr.overridescala.linkkit.api.packet.channel.PacketChannel
 
 class FolderListener(implicit channel: PacketChannel) {
 

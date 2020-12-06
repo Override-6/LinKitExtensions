@@ -15,7 +15,7 @@ class PingTask(private val targetId: String) extends Task[Long](targetId) {
      * adding some scala doc in order to commit something
      * */
     override def execute(): Unit = {
-        println(s"(channel id ${channel.channelID})")
+        println(s"(channel id ${channel.identifier})")
         channel.sendPacket(EmptyPacket)
         val p1 = testPacket(EmptyPacket)
         val p2 = testPacket(EmptyPacket)

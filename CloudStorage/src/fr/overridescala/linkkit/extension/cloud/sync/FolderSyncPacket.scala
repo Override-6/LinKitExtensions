@@ -3,7 +3,8 @@ package fr.overridescala.linkkit.`extension`.cloud.sync
 import java.nio.file.Path
 
 import fr.overridescala.linkkit.api.`extension`.packet.PacketFactory
-import fr.overridescala.linkkit.api.packet.{Packet, PacketChannel, PacketUtils}
+import fr.overridescala.linkkit.api.packet.channel.PacketChannel
+import fr.overridescala.linkkit.api.packet.{Packet, PacketUtils}
 
 
 case class FolderSyncPacket(order: String,

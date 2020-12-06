@@ -5,7 +5,8 @@ import java.nio.file.StandardWatchEventKinds._
 import java.nio.file._
 
 import com.sun.nio.file.{ExtendedWatchEventModifier, SensitivityWatchEventModifier}
-import fr.overridescala.linkkit.api.packet.{Packet, PacketChannel}
+import fr.overridescala.linkkit.api.packet.Packet
+import fr.overridescala.linkkit.api.packet.channel.PacketChannel
 import fr.overridescala.linkkit.api.utils.Utils
 
 import scala.collection.mutable
