@@ -2,7 +2,6 @@ package fr.overridescala.linkkit.`extension`.debug
 
 import fr.overridescala.linkkit.api.packet.fundamental.{DataPacket, TaskInitPacket}
 import fr.overridescala.linkkit.api.task.{Task, TaskExecutor, TaskInitInfo}
-import fr.overridescala.linkkit.api.utils.Constants
 import StressTestTask.{Type, download, upload}
 import fr.overridescala.linkkit.api.packet.channel.PacketChannel
 
@@ -12,11 +11,11 @@ import fr.overridescala.linkkit.api.packet.channel.PacketChannel
  * wait
  * */
 class StressTestTask(private val totalDataLength: Long,
-                     private val isDownload: Boolean) extends Task[Unit](Constants.SERVER_ID) {
+                     private val isDownload: Boolean) extends Task[Unit]("server") {
 
     override val initInfo: TaskInitInfo = {
         val downloadBit: Byte = if (isDownload) 1 else 0
-        TaskInitInfo.of(Type, Constants.SERVER_ID, Array(downloadBit) ++ s"$totalDataLength".getBytes())
+        TaskInitInfo.of(Type, "server", Array(downloadBit) ++ s"$totalDataLength".getBytes())
     }
 
     override def execute(): Unit = {

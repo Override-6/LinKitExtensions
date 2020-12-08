@@ -1,18 +1,21 @@
 package fr.overridescala.linkkit.`extension`.debug.commands
 
 import fr.overridescala.linkkit.`extension`.controller.cli.{CommandException, CommandExecutor}
-import fr.overridescala.linkkit.`extension`.controller.cli.CommandExecutor
 import fr.overridescala.linkkit.api.Relay
 
 class SendMessageCommand(relay: Relay) extends CommandExecutor {
 
     override def execute(implicit args: Array[String]): Unit = {
-        if (args.length < 1)
-            throw CommandException("usage : msg <target> [message]")
-        val target = args(0)
-        val message = args.slice(1, args.length).mkString(" ")
+        val isErr = args.contains("-R")
 
-        val consoleOpt = relay.getConsoleOut(target)
+        val targetIndex = if(isErr) 1 else 0
+        if (args.length < targetIndex + 1)
+            throw CommandException("usage : msg [-R] <target> [message]")
+
+        val target = args(targetIndex)
+        val message = args.slice(targetIndex + 1, args.length).mkString(" ")
+
+        val consoleOpt = if (isErr) relay.getConsoleErr(target) else relay.getConsoleOut(target)
 
         if (consoleOpt.isEmpty) {
             Console.err.println(s"Could not find remote console for '$target'")
