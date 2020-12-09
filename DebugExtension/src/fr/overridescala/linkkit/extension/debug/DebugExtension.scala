@@ -10,7 +10,7 @@ import fr.overridescala.linkkit.api.`extension`.{RelayExtension, relayExtensionI
 
 @relayExtensionInfo(name = "DebugExtension", dependencies = Array("RelayControllerCli"))
 class DebugExtension(relay: Relay) extends RelayExtension(relay) {
-    override def main(): Unit = {
+    override def onEnable(): Unit = {
         val completerHandler = relay.taskCompleterHandler
 
         completerHandler.putCompleter(PingTask.Type, _ => PingTask.Completer())

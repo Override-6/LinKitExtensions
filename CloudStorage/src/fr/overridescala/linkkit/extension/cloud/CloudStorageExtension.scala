@@ -14,7 +14,7 @@ import fr.overridescala.linkkit.api.utils.Utils
 @relayExtensionInfo(name = "CloudStorageExtension", dependencies = Array("RelayControllerCli"))
 class CloudStorageExtension(relay: Relay) extends RelayExtension(relay) {
 
-    override def main(): Unit = {
+    override def onEnable(): Unit = {
         val completerHandler = relay.taskCompleterHandler
         completerHandler.putCompleter(UploadTask.TYPE, init => DownloadTask(Utils.deserialize(init.content)))
         completerHandler.putCompleter(DownloadTask.TYPE, init => UploadTask(Utils.deserialize(init.content)))

@@ -15,7 +15,7 @@ class ControllerExtension(relay: Relay) extends RelayExtension(relay) {
     private val automationManager = new AutomationManager()
     private val commandManager = new CommandManager()
 
-    override def main(): Unit = {
+    override def onEnable(): Unit = {
 
         commandManager.register("exec", new ExecuteUnknownTaskCommand(relay))
         commandManager.register("stop", new ShutdownCommand())
