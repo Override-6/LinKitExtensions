@@ -5,7 +5,7 @@ import java.util
 
 import fr.overridescala.linkkit.`extension`.cloud.transfer.TransferDescription
 import UploadTask._
-import fr.overridescala.linkkit.api.exceptions.UnexpectedPacketException
+import fr.overridescala.linkkit.api.exception.UnexpectedPacketException
 import fr.overridescala.linkkit.api.packet.Packet
 import fr.overridescala.linkkit.api.packet.fundamental.{DataPacket, ErrorPacket}
 import fr.overridescala.linkkit.api.task.{Task, TaskInitInfo}

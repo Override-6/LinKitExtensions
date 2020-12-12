@@ -5,7 +5,7 @@ import java.nio.file.{Files, Path}
 
 import fr.overridescala.linkkit.`extension`.cloud.transfer.TransferDescription
 import DownloadTask.TYPE
-import fr.overridescala.linkkit.api.exceptions.TaskException
+import fr.overridescala.linkkit.api.exception.TaskException
 import fr.overridescala.linkkit.api.packet.Packet
 import fr.overridescala.linkkit.api.packet.fundamental.{DataPacket, ErrorPacket}
 import fr.overridescala.linkkit.api.task.{Task, TaskInitInfo}

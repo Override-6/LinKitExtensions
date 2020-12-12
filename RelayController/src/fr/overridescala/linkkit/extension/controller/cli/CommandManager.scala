@@ -1,6 +1,6 @@
 package fr.overridescala.linkkit.`extension`.controller.cli
 
-import fr.overridescala.linkkit.api.exceptions.{RelayException, TaskOperationFailException}
+import fr.overridescala.linkkit.api.exception.{RelayException, TaskOperationFailException}
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer

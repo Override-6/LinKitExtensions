@@ -13,7 +13,7 @@ class ControllerExtension(relay: Relay) extends RelayExtension(relay) {
     private val commandManager = new CommandManager()
 
     override def onEnable(): Unit = {
-        commandManager.register("stop", new ShutdownCommand())
+        commandManager.register("stop", new ShutdownCommand(relay))
         commandManager.start()
 
         val properties = relay.properties
