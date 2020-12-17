@@ -14,6 +14,8 @@ class CommandManager {
         commands.put(command.toLowerCase, executor)
 
     def perform(command: String): Unit = {
+        if (command == null)
+            return
         val args = parseLine(command.trim())
         val cmd = command.takeWhile(c => !Character.isWhitespace(c)).toLowerCase
         if (!commands.contains(cmd)) {
