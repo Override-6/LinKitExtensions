@@ -5,7 +5,7 @@ import java.nio.file.StandardWatchEventKinds._
 import java.nio.file._
 
 import com.sun.nio.file.{ExtendedWatchEventModifier, SensitivityWatchEventModifier}
-import fr.`override`.linkit.api.packet.Packet
+import fr.`override`.linkit.api.packet.{Packet, PacketCoordinates}
 import fr.`override`.linkit.api.packet.channel.PacketChannel
 import fr.`override`.linkit.api.utils.Utils
 
@@ -40,7 +40,7 @@ class FolderSync(localPath: String,
     }
 
     private def filterEvents(events: ListBuffer[WatchEvent[Path]]): Unit = {
-        val doNotFilter = events.filter(_.kind() == ENTRY_DELETE)
+        val noFiltered = events.filter(_.kind() == ENTRY_DELETE)
         val toFilter = events.filterNot(_.kind() == ENTRY_DELETE)
         val pathEvents = mutable.Map.empty[Path, WatchEvent[Path]]
 
@@ -50,7 +50,15 @@ class FolderSync(localPath: String,
                 pathEvents.put(path, event)
         }
         events.clear()
-        events ++= pathEvents.values ++= doNotFilter
+        events ++= pathEvents.values ++= noFiltered
+    }
+
+    private def replaceCreateEvents(events: ListBuffer[WatchEvent[Path]]): Unit = {
+        val paths = events.map(_.context())
+        events.filterInPlace(event => {
+            val count = paths.count(_ == event.context())
+            count == 1 || event.kind() == ENTRY_CREATE
+        })
     }
 
     private def dispatchEvents(key: WatchKey): Unit = {
@@ -61,8 +69,11 @@ class FolderSync(localPath: String,
 
         val dir = key.watchable().asInstanceOf[Path]
         dispatchRenameEvents(dir, events)
-        filterEvents(events)
 
+        filterEvents(events)
+        replaceCreateEvents(events)
+
+        println(s"events = ${events}")
 
         for (event <- events)
             dispatchEvent(event)
@@ -71,17 +82,19 @@ class FolderSync(localPath: String,
             val context = event.context()
             val affected = dir.resolve(context)
 
-            if (ignoredPaths.contains(affected)) {
+            if (ignoredPaths.clone().contains(affected)) {
                 ignoredPaths -= affected
                 println(s"IGNORED EVENT ${event.kind()} FOR $affected")
                 return
             }
-            println(s"DETECTED EVENT ${event.kind()} FOR $affected")
+            //println(s"DETECTED EVENT ${event.kind()} FOR $affected")
+
+            println(affected + " -" + event.kind())
+
 
             event.kind() match {
-                case ENTRY_CREATE => listener.onCreate(affected)
                 case ENTRY_DELETE => listener.onDelete(affected)
-                case ENTRY_MODIFY => listener.onModify(affected)
+                case ENTRY_MODIFY | ENTRY_CREATE => listener.onModify(affected)
             }
         }
     }
@@ -130,7 +143,7 @@ class FolderSync(localPath: String,
         }
     }
 
-    private def handlePacket(packet: Packet): Unit = {
+    private def handlePacket(packet: Packet, coords: PacketCoordinates): Unit = {
         val syncPacket = packet.asInstanceOf[FolderSyncPacket]
         val order = syncPacket.order
         val path = toLocal(syncPacket.affectedPath)
@@ -154,7 +167,10 @@ class FolderSync(localPath: String,
     }
 
     private def handleFileDownload(syncPacket: FolderSyncPacket): Unit = {
+        val remotePath = syncPacket.affectedPath
         val path = toLocal(syncPacket.affectedPath)
+        println("downloading " + remotePath)
+
 
         if (Files.notExists(path)) {
             Files.createDirectories(path.getParent)

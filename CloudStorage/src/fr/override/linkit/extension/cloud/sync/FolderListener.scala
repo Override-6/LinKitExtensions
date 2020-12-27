@@ -15,24 +15,26 @@ class FolderListener(implicit channel: PacketChannel) {
         channel.sendPacket(FolderSyncPacket("delete", affected))
     }
 
-    def onCreate(affected: Path): Unit = {
+    def onModify(affected: Path): Unit = {
         if (Files.isDirectory(affected)) {
             channel.sendPacket(FolderSyncPacket("mkdirs", affected))
             return
         }
-        onModify(affected)
+
+        uploadDirectory(affected)
     }
 
-    def onModify(affected: Path): Unit = {
+    private def uploadDirectory(affected: Path): Unit = {
         if (Files.isDirectory(affected) || Files.notExists(affected))
             return
         try {
             val bytes = Files.readAllBytes(affected)
+            println(s"bytes.length = ${bytes.length}")
             channel.sendPacket(FolderSyncPacket(s"upload", affected, bytes))
         } catch {
             case e: FileSystemException =>
                 Console.err.println(e.getMessage)
-                Thread.sleep(50)
+                Thread.sleep(200)
                 onModify(affected)
         }
     }
