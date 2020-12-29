@@ -16,7 +16,8 @@ class SyncFoldersTask(relay: Relay, targetId: String, targetFolder: String, loca
     override def execute(): Unit = {
         channel.close(CloseReason.INTERNAL)
         val asyncChannel = relay.createAsyncChannel(targetId, channel.identifier)
-        new FolderSync(localFolder, targetFolder)(asyncChannel).start()
+        val fsa = relay.configuration.fsAdapter
+        new FolderSync(localFolder, targetFolder, fsa)(asyncChannel).start()
     }
 }
 
@@ -35,7 +36,8 @@ object SyncFoldersTask {
         override def execute(): Unit = {
             channel.close(CloseReason.INTERNAL)
             val asyncChannel = relay.createAsyncChannel(channel.connectedID, channel.identifier)
-            new FolderSync(localFolder, remoteFolder)(asyncChannel).start()
+            val fsa = relay.configuration.fsAdapter
+            new FolderSync(localFolder, remoteFolder, fsa)(asyncChannel).start()
         }
     }
 

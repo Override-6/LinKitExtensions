@@ -1,22 +1,24 @@
 package fr.`override`.linkit.`extension`.cloud.sync
 
-import java.nio.file.{FileSystemException, Files, Path}
+
+import java.io.IOException
 
 import fr.`override`.linkit.api.packet.channel.PacketChannel
+import fr.`override`.linkit.api.system.fs.{FileAdapter, FileSystemAdapter}
 
-class FolderListener(implicit channel: PacketChannel) {
+class FolderListener(implicit channel: PacketChannel, fsa: FileSystemAdapter) {
 
-    def onRename(affected: Path, newName: String): Unit = {
+    def onRename(affected: FileAdapter, newName: String): Unit = {
         channel.sendPacket(FolderSyncPacket("rename", affected, newName.getBytes()))
     }
 
-    def onDelete(affected: Path): Unit = {
+    def onDelete(affected: FileAdapter): Unit = {
         println("DELETED " + affected)
         channel.sendPacket(FolderSyncPacket("delete", affected))
     }
 
-    def onModify(affected: Path): Unit = {
-        if (Files.isDirectory(affected)) {
+    def onModify(affected: FileAdapter): Unit = {
+        if (affected isDirectory) {
             channel.sendPacket(FolderSyncPacket("mkdirs", affected))
             return
         }
@@ -24,15 +26,15 @@ class FolderListener(implicit channel: PacketChannel) {
         uploadDirectory(affected)
     }
 
-    private def uploadDirectory(affected: Path): Unit = {
-        if (Files.isDirectory(affected) || Files.notExists(affected))
+    private def uploadDirectory(affected: FileAdapter): Unit = {
+        if (affected.isDirectory || affected.notExists)
             return
         try {
-            val bytes = Files.readAllBytes(affected)
+            val bytes = fsa.readAllBytes(affected)
             println(s"bytes.length = ${bytes.length}")
             channel.sendPacket(FolderSyncPacket(s"upload", affected, bytes))
         } catch {
-            case e: FileSystemException =>
+            case e: IOException =>
                 Console.err.println(e.getMessage)
                 Thread.sleep(200)
                 onModify(affected)

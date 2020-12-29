@@ -1,10 +1,10 @@
 package fr.`override`.linkit.`extension`.cloud.sync
 
-import java.nio.file.Path
 
 import fr.`override`.linkit.api.`extension`.packet.PacketFactory
 import fr.`override`.linkit.api.packet.channel.PacketChannel
 import fr.`override`.linkit.api.packet.{Packet, PacketUtils}
+import fr.`override`.linkit.api.system.fs.FileAdapter
 
 
 case class FolderSyncPacket(order: String,
@@ -13,7 +13,7 @@ case class FolderSyncPacket(order: String,
 
 object FolderSyncPacket extends PacketFactory[FolderSyncPacket] {
 
-    def apply(order: String, affectedPath: Path, content: Array[Byte] = Array())(implicit channel: PacketChannel): FolderSyncPacket = {
+    def apply(order: String, affectedPath: FileAdapter, content: Array[Byte] = Array())(implicit channel: PacketChannel): FolderSyncPacket = {
         new FolderSyncPacket(order, affectedPath.toString, content)
     }
 

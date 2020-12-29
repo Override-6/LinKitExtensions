@@ -5,19 +5,19 @@ import java.nio.file.StandardWatchEventKinds._
 import java.nio.file._
 
 import com.sun.nio.file.{ExtendedWatchEventModifier, SensitivityWatchEventModifier}
-import fr.`override`.linkit.api.packet.{Packet, PacketCoordinates}
 import fr.`override`.linkit.api.packet.channel.PacketChannel
-import fr.`override`.linkit.api.utils.Utils
+import fr.`override`.linkit.api.packet.{Packet, PacketCoordinates}
+import fr.`override`.linkit.api.system.fs.{FileAdapter, FileSystemAdapter}
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
 class FolderSync(localPath: String,
-                 targetPath: String)(implicit channel: PacketChannel.Async) {
+                 targetPath: String, fsa: FileSystemAdapter)(implicit channel: PacketChannel.Async) {
 
-    private val ignoredPaths = ListBuffer.empty[Path]
+    private val ignoredPaths = ListBuffer.empty[FileAdapter]
     private val watchService = FileSystems.getDefault.newWatchService()
-    private val listener = new FolderListener()(channel)
+    private val listener: FolderListener = new FolderListener()(channel, fsa)
 
     channel onPacketReceived handlePacket
 
@@ -80,7 +80,7 @@ class FolderSync(localPath: String,
 
         def dispatchEvent(event: WatchEvent[Path]): Unit = {
             val context = event.context()
-            val affected = dir.resolve(context)
+            val affected = fsa.getAdapter(dir.resolve(context).toString)
 
             if (ignoredPaths.clone().contains(affected)) {
                 ignoredPaths -= affected
@@ -112,7 +112,8 @@ class FolderSync(localPath: String,
 
             if (lastKind == ENTRY_DELETE && kind == ENTRY_CREATE) {
                 val newName = event.context().toString
-                val affected = dir.resolve(lastEvent.context())
+                val affected = fsa.getAdapter(dir.resolve(lastEvent.context()).toString)
+
                 listener.onRename(affected, newName)
                 events -= event -= lastEvent
                 return
@@ -123,22 +124,20 @@ class FolderSync(localPath: String,
     }
 
 
-    private def deletePath(path: Path): Unit = {
-        if (Files.notExists(path))
+    private def deletePath(path: FileAdapter): Unit = {
+        if (path.notExists)
             return
         deleteRecursively(path)
 
-        def deleteRecursively(path: Path): Unit = {
-            if (Files.isDirectory(path)) {
-                Files.list(path).forEach(deleteRecursively)
+        def deleteRecursively(path: FileAdapter): Unit = {
+            if (path.isDirectory) {
+                fsa.list(path).foreach(deleteRecursively)
             }
             try
-                Files.deleteIfExists(path)
+                fsa.delete(path)
             catch {
                 case e: FileSystemException =>
                     e.printStackTrace()
-                    Files.setAttribute(path, "dos:readonly", false)
-                    Files.deleteIfExists(path)
             }
         }
     }
@@ -146,14 +145,14 @@ class FolderSync(localPath: String,
     private def handlePacket(packet: Packet, coords: PacketCoordinates): Unit = {
         val syncPacket = packet.asInstanceOf[FolderSyncPacket]
         val order = syncPacket.order
-        val path = toLocal(syncPacket.affectedPath)
+        val affected = toLocal(syncPacket.affectedPath)
 
-        ignoredPaths += path
+        ignoredPaths += affected
         order match {
             case "upload" => handleFileDownload(syncPacket)
             case "rename" => handleRenameOrder(syncPacket)
-            case "delete" => deletePath(path)
-            case "mkdirs" => Files.createDirectories(path)
+            case "delete" => deletePath(affected)
+            case "mkdirs" => fsa.createDirectories(affected)
         }
     }
 
@@ -162,8 +161,8 @@ class FolderSync(localPath: String,
         val path = toLocal(syncPacket.affectedPath)
 
         val renamed = path.resolveSibling(newName)
-        if (Files.exists(path))
-            Files.move(path, renamed, StandardCopyOption.ATOMIC_MOVE)
+        if (path exists)
+            fsa.move(path, renamed)
     }
 
     private def handleFileDownload(syncPacket: FolderSyncPacket): Unit = {
@@ -172,19 +171,17 @@ class FolderSync(localPath: String,
         println("downloading " + remotePath)
 
 
-        if (Files.notExists(path)) {
-            Files.createDirectories(path.getParent)
-            if (path.toString.contains('.') && Files.notExists(path))
-                Files.createFile(path)
+        if (path notExists) {
+            fsa.createDirectories(path.getParent)
+            if (path.toString.contains('.') && path.notExists)
+                fsa.create(path)
         }
-        if (Files.isWritable(path))
-            Files.write(path, syncPacket.content, StandardOpenOption.CREATE)
+        if (path.isWritable)
+            path.write(syncPacket.content)
     }
 
-    private def toLocal(nonLocalPath: String): Path = {
-        val relativePath = Utils.subPathOfUnknownFile(nonLocalPath, targetNameCount)
-        Utils.formatPath(localPath + relativePath)
-    }
+    private def toLocal(nonLocalPath: String): FileAdapter =
+        fsa.getAdapter(nonLocalPath).getParent(targetNameCount)
 
     private val targetNameCount = targetPath.count(_ == File.separatorChar)
 
