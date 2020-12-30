@@ -4,7 +4,7 @@ package fr.`override`.linkit.`extension`.cloud.sync
 import java.io.IOException
 
 import fr.`override`.linkit.api.packet.channel.PacketChannel
-import fr.`override`.linkit.api.system.fs.{FileAdapter, FileSystemAdapter}
+import fr.`override`.linkit.api.system.fsa.{FileAdapter, FileSystemAdapter}
 
 class FolderListener(implicit channel: PacketChannel, fsa: FileSystemAdapter) {
 

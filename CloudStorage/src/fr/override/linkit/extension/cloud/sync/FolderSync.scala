@@ -7,7 +7,7 @@ import java.nio.file._
 import com.sun.nio.file.{ExtendedWatchEventModifier, SensitivityWatchEventModifier}
 import fr.`override`.linkit.api.packet.channel.PacketChannel
 import fr.`override`.linkit.api.packet.{Packet, PacketCoordinates}
-import fr.`override`.linkit.api.system.fs.{FileAdapter, FileSystemAdapter}
+import fr.`override`.linkit.api.system.fsa.{FileAdapter, FileSystemAdapter}
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
