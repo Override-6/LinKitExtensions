@@ -16,13 +16,9 @@ class SendMessageCommand(relay: Relay) extends CommandExecutor {
         val target = args(targetIndex)
         val message = args.slice(targetIndex + 1, args.length).mkString(" ")
 
-        val consoleOpt = if (isErr) relay.getConsoleErr(target) else relay.getConsoleOut(target)
+        val console = if (isErr) relay.getConsoleErr(target) else relay.getConsoleOut(target)
 
-        if (consoleOpt.isEmpty) {
-            Console.err.println(s"Could not find remote console for '$target'")
-            return
-        }
-        consoleOpt.get.println(message)
+        console.println(message)
         println(s"${relay.identifier} -> $target: $message")
     }
 }
