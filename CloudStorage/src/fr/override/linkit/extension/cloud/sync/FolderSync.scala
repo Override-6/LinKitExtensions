@@ -19,7 +19,7 @@ class FolderSync(localPath: String,
     private val watchService = FileSystems.getDefault.newWatchService()
     private val listener: FolderListener = new FolderListener()(channel, fsa)
 
-    channel onPacketReceived handlePacket
+    channel onPacketInjected handlePacket
 
     def start(): Unit = {
         new Thread(() => {
