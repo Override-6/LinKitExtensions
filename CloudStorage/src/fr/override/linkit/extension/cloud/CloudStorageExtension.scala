@@ -19,8 +19,8 @@ class CloudStorageExtension(relay: Relay) extends RelayExtension(relay) {
         val commandManager = properties.getProperty(ControllerExtension.CommandManagerProp): CommandManager
         commandManager.register("sync", new SyncDirCommand(relay))
 
-        val packetManager = relay.packetManager
-        packetManager.register(FolderSyncPacket)
+        val packetTranslator = relay.packetTranslator
+        packetTranslator.registerFactory(FolderSyncPacket)
     }
 
 }

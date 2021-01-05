@@ -2,9 +2,8 @@ package fr.`override`.linkit.`extension`.debug
 
 import fr.`override`.linkit.`extension`.controller.ControllerExtension
 import fr.`override`.linkit.`extension`.controller.cli.CommandManager
-import fr.`override`.linkit.`extension`.debug.commands.{PingCommand, SendMessageCommand, StressTestCommand}
 import fr.`override`.linkit.`extension`.debug._
-import fr.`override`.linkit.`extension`.debug.commands.SendMessageCommand
+import fr.`override`.linkit.`extension`.debug.commands.{PingCommand, SendMessageCommand, StressTestCommand}
 import fr.`override`.linkit.api.Relay
 import fr.`override`.linkit.api.`extension`.{RelayExtension, relayExtensionInfo}
 
@@ -22,8 +21,5 @@ class DebugExtension(relay: Relay) extends RelayExtension(relay) {
         commandManager.register("ping", new PingCommand(relay))
         commandManager.register("stress", new StressTestCommand(relay))
         commandManager.register("msg", new SendMessageCommand(relay))
-
-        val eventObserver = relay.eventObserver
-        //eventObserver.register(new DebugEventListener)
     }
 }

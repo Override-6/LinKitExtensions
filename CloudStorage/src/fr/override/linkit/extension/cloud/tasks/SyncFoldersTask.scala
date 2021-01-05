@@ -1,8 +1,9 @@
 package fr.`override`.linkit.`extension`.cloud.tasks
 
-import SyncFoldersTask.{LOCAL_PATH_SEPARATOR, TYPE}
 import fr.`override`.linkit.`extension`.cloud.sync.FolderSync
+import fr.`override`.linkit.`extension`.cloud.tasks.SyncFoldersTask.{LOCAL_PATH_SEPARATOR, TYPE}
 import fr.`override`.linkit.api.Relay
+import fr.`override`.linkit.api.packet.channel.AsyncPacketChannel
 import fr.`override`.linkit.api.packet.fundamental.TaskInitPacket
 import fr.`override`.linkit.api.system.CloseReason
 import fr.`override`.linkit.api.task.{Task, TaskExecutor, TaskInitInfo}
@@ -15,7 +16,7 @@ class SyncFoldersTask(relay: Relay, targetId: String, targetFolder: String, loca
 
     override def execute(): Unit = {
         channel.close(CloseReason.INTERNAL)
-        val asyncChannel = relay.createAsyncChannel(targetId, channel.identifier)
+        val asyncChannel = relay.createChannel(channel.identifier, targetId, AsyncPacketChannel)
         val fsa = relay.configuration.fsAdapter
         new FolderSync(localFolder, targetFolder, fsa)(asyncChannel).start()
     }
@@ -35,7 +36,7 @@ object SyncFoldersTask {
 
         override def execute(): Unit = {
             channel.close(CloseReason.INTERNAL)
-            val asyncChannel = relay.createAsyncChannel(channel.connectedID, channel.identifier)
+            val asyncChannel = relay.createChannel(channel.identifier, channel.connectedID, AsyncPacketChannel)
             val fsa = relay.configuration.fsAdapter
             new FolderSync(localFolder, remoteFolder, fsa)(asyncChannel).start()
         }

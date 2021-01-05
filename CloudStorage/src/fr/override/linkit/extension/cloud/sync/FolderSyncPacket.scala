@@ -1,8 +1,7 @@
 package fr.`override`.linkit.`extension`.cloud.sync
 
 import fr.`override`.linkit.api.packet.channel.PacketChannel
-import fr.`override`.linkit.api.packet.factory.PacketFactory
-import fr.`override`.linkit.api.packet.{Packet, PacketUtils}
+import fr.`override`.linkit.api.packet.{Packet, PacketFactory, PacketUtils}
 import fr.`override`.linkit.api.system.fsa.FileAdapter
 
 
