@@ -1,17 +1,29 @@
 package fr.`override`.linkit.`extension`.controller.cli
 
-import fr.`override`.linkit.api.exception.{RelayException, TaskOperationFailException}
+import fr.`override`.linkit.api.`extension`.fragment.ExtensionFragment
+import fr.`override`.linkit.api.exception.RelayException
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 import scala.util.control.NonFatal
 
-class CommandManager {
+class CommandManager extends ExtensionFragment {
 
     private val commands: mutable.Map[String, CommandExecutor] = mutable.Map.empty
+    @volatile private var alive = true
 
     def register(command: String, executor: CommandExecutor): Unit =
         commands.put(command.toLowerCase, executor)
+
+    override def start(): Unit = {
+        val thread = new Thread(() => {
+            while (alive)
+                perform(InputConsole.requestNextInput())
+        })
+
+        thread.setName("Command listener Thread")
+        thread.start()
+    }
 
     def perform(command: String): Unit = {
         if (command == null)
@@ -26,19 +38,9 @@ class CommandManager {
         try {
             commands(cmd).execute(args)
         } catch {
-            case e@(_:CommandException | _: RelayException) => Console.err.println(e.getMessage)
+            case e@(_: CommandException | _: RelayException) => Console.err.println(e.getMessage)
             case NonFatal(e) => e.printStackTrace()
         }
-    }
-
-    def start(): Unit = {
-        val thread = new Thread(() => {
-            while (true)
-                perform(InputConsole.requestNextInput())
-        })
-
-        thread.setName("Command listener Thread")
-        thread.start()
     }
 
     private def parseLine(line: String): Array[String] = {
@@ -68,4 +70,8 @@ class CommandManager {
         args.toArray
     }
 
+    override def destroy(): Unit = {
+        commands.clear()
+        alive = false
+    }
 }

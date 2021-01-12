@@ -46,8 +46,9 @@ object InputConsole {
     private def start(): Unit = {
         val consoleThread = new Thread(() => {
             while (true) {
+                val ticket = ticketQueue.take()
                 val line = StdIn.readLine()
-                ticketQueue.take().setLine(line)
+                ticket.setLine(line)
             }
         })
         consoleThread.setName("Console Inputs Queue")

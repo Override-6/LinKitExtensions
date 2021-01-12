@@ -1,7 +1,7 @@
 package fr.`override`.linkit.`extension`.cloud.sync
 
 import fr.`override`.linkit.api.packet.channel.PacketChannel
-import fr.`override`.linkit.api.packet.{Packet, PacketFactory, PacketUtils}
+import fr.`override`.linkit.api.packet.{Packet, PacketFactory, PacketTranslator, PacketUtils}
 import fr.`override`.linkit.api.system.fsa.FileAdapter
 
 
@@ -19,20 +19,20 @@ object FolderSyncPacket extends PacketFactory[FolderSyncPacket] {
     private val Affected = "<affected>".getBytes()
     private val Content = "<content>".getBytes()
 
-    override def decompose(implicit packet: FolderSyncPacket): Array[Byte] = {
+    override def decompose(translator: PacketTranslator)(implicit packet: FolderSyncPacket): Array[Byte] = {
         val orderBytes = packet.order.getBytes()
         val affectedBytes = packet.affectedPath.getBytes()
         Type ++ orderBytes ++ Affected ++ affectedBytes ++ Content ++ packet.content
     }
 
-    override def canTransform(implicit bytes: Array[Byte]): Boolean = {
+    override def canTransform(translator: PacketTranslator)(implicit bytes: Array[Byte]): Boolean = {
         bytes.startsWith(Type)
     }
 
-    override def build(implicit bytes: Array[Byte]): FolderSyncPacket = {
-        val order = PacketUtils.cutString(Type, Affected)
-        val affectedPath = PacketUtils.cutString(Affected, Content)
-        val content = PacketUtils.cutEnd(Content)
+    override def build(translator: PacketTranslator)(implicit bytes: Array[Byte]): FolderSyncPacket = {
+        val order = PacketUtils.stringBetween(Type, Affected)
+        val affectedPath = PacketUtils.stringBetween(Affected, Content)
+        val content = PacketUtils.untilEnd(Content)
 
         new FolderSyncPacket(order, affectedPath, content)
     }
