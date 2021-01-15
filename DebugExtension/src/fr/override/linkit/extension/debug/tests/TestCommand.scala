@@ -2,12 +2,12 @@ package fr.`override`.linkit.`extension`.debug.tests
 
 import fr.`override`.linkit.`extension`.controller.cli.CommandExecutor
 import fr.`override`.linkit.api.Relay
-import fr.`override`.linkit.api.packet.collector.AsyncPacketCollector
 import fr.`override`.linkit.api.utils.cache.SharedCollection
 
 class TestCommand(relay: Relay) extends CommandExecutor {
 
-    private val sharedCollection = new SharedCollection[String](relay.createCollector(415, AsyncPacketCollector), false)
+    private val sharedCollection = SharedCollection.open[String](145)(relay.traffic)
+            .addListener((a, b, c) => println(a, b, c))
     private val Set = 1
     private val Clear = 2
     private val Remove = 3
@@ -32,11 +32,9 @@ class TestCommand(relay: Relay) extends CommandExecutor {
             case Clear => sharedCollection.clear()
             case Remove => sharedCollection.remove(index)
             case Add => sharedCollection.add(index, item)
-            case Flush =>
-                sharedCollection.flush()
+            case Flush => sharedCollection.flush()
         }
-
-
+        println(s"Applied modification '$modKind'")
     }
 
 }
