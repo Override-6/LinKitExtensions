@@ -6,7 +6,8 @@ import fr.`override`.linkit.api.utils.cache.collection.SharedCollection
 
 class TestCommand(relay: Relay) extends CommandExecutor {
 
-    private val sharedCollection = SharedCollection.open[String](145)(relay.traffic)
+    private val sharedCollection = relay.network.cache
+            .open(255, SharedCollection[String])
             .addListener((a, b, c) => println(a, b, c))
     private val Set = 1
     private val Clear = 2
