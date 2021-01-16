@@ -2,7 +2,7 @@ package fr.`override`.linkit.`extension`.debug.tests
 
 import fr.`override`.linkit.`extension`.controller.cli.CommandExecutor
 import fr.`override`.linkit.api.Relay
-import fr.`override`.linkit.api.utils.cache.SharedCollection
+import fr.`override`.linkit.api.utils.cache.collection.SharedCollection
 
 class TestCommand(relay: Relay) extends CommandExecutor {
 
