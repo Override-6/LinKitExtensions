@@ -1,6 +1,6 @@
 package fr.`override`.linkit.`extension`.debug
 
-import PingTask.Type
+import fr.`override`.linkit.`extension`.debug.PingTask.Type
 import fr.`override`.linkit.api.packet.Packet
 import fr.`override`.linkit.api.packet.fundamental.EmptyPacket
 import fr.`override`.linkit.api.task.{Task, TaskExecutor, TaskInitInfo}
@@ -43,6 +43,9 @@ class PingTask(private val targetId: String) extends Task[Long](targetId) {
 object PingTask {
     val Type: String = "PING"
 
+    def apply(targetID: String): PingTask =
+        new PingTask(targetID)
+
     case class Completer() extends TaskExecutor {
         override def execute(): Unit = {
             channel.nextPacket()
@@ -53,9 +56,6 @@ object PingTask {
         }
 
     }
-
-    def apply(targetID: String): PingTask =
-        new PingTask(targetID)
 
 
 }

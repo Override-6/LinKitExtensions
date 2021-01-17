@@ -1,7 +1,6 @@
 package fr.`override`.linkit.`extension`.debug.commands
 
 import fr.`override`.linkit.`extension`.controller.cli.{CommandException, CommandExecutor}
-import fr.`override`.linkit.`extension`.controller.cli.CommandException
 import fr.`override`.linkit.api.Relay
 
 class SendMessageCommand(relay: Relay) extends CommandExecutor {

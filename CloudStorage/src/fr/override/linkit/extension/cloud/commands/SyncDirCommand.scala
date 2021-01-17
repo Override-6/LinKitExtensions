@@ -2,7 +2,6 @@ package fr.`override`.linkit.`extension`.cloud.commands
 
 import fr.`override`.linkit.`extension`.cloud.tasks.SyncFoldersTask
 import fr.`override`.linkit.`extension`.controller.cli.{CommandException, CommandExecutor, CommandUtils}
-import fr.`override`.linkit.`extension`.controller.cli.CommandUtils
 import fr.`override`.linkit.api.Relay
 
 class SyncDirCommand(relay: Relay) extends CommandExecutor {

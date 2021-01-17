@@ -8,12 +8,6 @@ object InputConsole {
 
     private val ticketQueue = new PriorityBlockingQueue[InputRequestTicket]()
 
-    def requestNextInput(priority: Int = 0): String = {
-        val requestTicket = new InputRequestTicket(defNextPriority(priority))
-        ticketQueue.add(requestTicket)
-        requestTicket.getLine
-    }
-
     def ask(msg: String, possibleResponses: String*): String = {
         println(msg)
         var input = requestNextInput(10)
@@ -26,6 +20,12 @@ object InputConsole {
             }
             input
         }
+    }
+
+    def requestNextInput(priority: Int = 0): String = {
+        val requestTicket = new InputRequestTicket(defNextPriority(priority))
+        ticketQueue.add(requestTicket)
+        requestTicket.getLine
     }
 
     private def defNextPriority(priority: Int): Int = {
@@ -58,8 +58,8 @@ object InputConsole {
     start()
 
     class InputRequestTicket(val priority: Int) extends Comparable[InputRequestTicket] {
-        @volatile private var line: String = _
         private val threadOwner = Thread.currentThread()
+        @volatile private var line: String = _
 
         def getLine: String = {
             if (line == null)
@@ -69,14 +69,14 @@ object InputConsole {
             line
         }
 
-        override def toString: String = s"owner : $threadOwner"
-
         def setLine(line: String): Unit = {
             this.line = line
             synchronized {
                 notify()
             }
         }
+
+        override def toString: String = s"owner : $threadOwner"
 
         override def compareTo(o: InputRequestTicket): Int =
             o.priority - priority

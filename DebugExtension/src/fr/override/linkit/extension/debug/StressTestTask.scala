@@ -1,9 +1,9 @@
 package fr.`override`.linkit.`extension`.debug
 
+import fr.`override`.linkit.`extension`.debug.StressTestTask.{Type, download, upload}
+import fr.`override`.linkit.api.packet.channel.PacketChannel
 import fr.`override`.linkit.api.packet.fundamental.{DataPacket, TaskInitPacket}
 import fr.`override`.linkit.api.task.{Task, TaskExecutor, TaskInitInfo}
-import StressTestTask.{Type, download, upload}
-import fr.`override`.linkit.api.packet.channel.PacketChannel
 
 /**
  * This is a Test task, will not be documented.
@@ -30,23 +30,12 @@ class StressTestTask(private val totalDataLength: Long,
 
 object StressTestTask {
 
+    val Type = "STRSS"
     private val CONTINUE = "PCKT"
     private val END = "END"
-    val Type = "STRSS"
 
-
-    case class Completer(initPacket: TaskInitPacket) extends TaskExecutor {
-
-        private val content = initPacket.content
-        private val isDownload: Boolean = content(0) != 1
-        private val totalDataLength: Long = new String(content.slice(1, content.length)).toLong
-
-        override def execute(): Unit = {
-            if (isDownload)
-                download(channel, totalDataLength)
-            else upload(channel, totalDataLength)
-        }
-    }
+    def apply(totalDataLength: Int, isDownload: Boolean): StressTestTask =
+        new StressTestTask(totalDataLength, isDownload)
 
     private def upload(implicit channel: PacketChannel, totalDataLength: Long): Unit = {
         println("UPLOAD")
@@ -103,8 +92,18 @@ object StressTestTask {
         }
     }
 
-    def apply(totalDataLength: Int, isDownload: Boolean): StressTestTask =
-        new StressTestTask(totalDataLength, isDownload)
+    case class Completer(initPacket: TaskInitPacket) extends TaskExecutor {
+
+        private val content = initPacket.content
+        private val isDownload: Boolean = content(0) != 1
+        private val totalDataLength: Long = new String(content.slice(1, content.length)).toLong
+
+        override def execute(): Unit = {
+            if (isDownload)
+                download(channel, totalDataLength)
+            else upload(channel, totalDataLength)
+        }
+    }
 
 
 }
