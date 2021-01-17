@@ -16,7 +16,18 @@ class RelayStoredProperties(connection: Connection, relayProperties: RelayProper
 
     override def start(): Unit = update()
 
+    def update(): Unit = {
+        val set = preparedGet.executeQuery()
+        while (set.next()) {
+            val name = set.getString(1)
+            val value = set.getString(2)
+            relayProperties.putProperty(name, value)
+        }
+    }
+
     override def destroy(): Unit = store()
+
+    update() //automatically update
 
     def store(): Unit = {
         relayProperties.foreach((name, value) => {
@@ -25,15 +36,5 @@ class RelayStoredProperties(connection: Connection, relayProperties: RelayProper
             preparedSet.addBatch()
         })
         preparedSet.executeUpdate()
-    }
-
-    update() //automatically update
-    def update(): Unit = {
-        val set = preparedGet.executeQuery()
-        while (set.next()) {
-            val name = set.getString(1)
-            val value = set.getString(2)
-            relayProperties.putProperty(name, value)
-        }
     }
 }

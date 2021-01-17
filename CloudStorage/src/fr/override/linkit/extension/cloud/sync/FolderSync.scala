@@ -20,6 +20,7 @@ class FolderSync(localPath: String,
     private val listener: FolderListener = new FolderListener()(channel, fsa)
 
     channel addOnPacketInjected handlePacket
+    private val targetNameCount = targetPath.count(_ == File.separatorChar)
 
     def start(): Unit = {
         new Thread(() => {
@@ -37,28 +38,6 @@ class FolderSync(localPath: String,
             key.reset()
             key = watchService.take()
         }
-    }
-
-    private def filterEvents(events: ListBuffer[WatchEvent[Path]]): Unit = {
-        val noFiltered = events.filter(_.kind() == ENTRY_DELETE)
-        val toFilter = events.filterNot(_.kind() == ENTRY_DELETE)
-        val pathEvents = mutable.Map.empty[Path, WatchEvent[Path]]
-
-        for (event <- toFilter) {
-            val path = event.context()
-            if (!pathEvents.contains(path))
-                pathEvents.put(path, event)
-        }
-        events.clear()
-        events ++= pathEvents.values ++= noFiltered
-    }
-
-    private def replaceCreateEvents(events: ListBuffer[WatchEvent[Path]]): Unit = {
-        val paths = events.map(_.context())
-        events.filterInPlace(event => {
-            val count = paths.count(_ == event.context())
-            count == 1 || event.kind() == ENTRY_CREATE
-        })
     }
 
     private def dispatchEvents(key: WatchKey): Unit = {
@@ -99,6 +78,28 @@ class FolderSync(localPath: String,
         }
     }
 
+    private def filterEvents(events: ListBuffer[WatchEvent[Path]]): Unit = {
+        val noFiltered = events.filter(_.kind() == ENTRY_DELETE)
+        val toFilter = events.filterNot(_.kind() == ENTRY_DELETE)
+        val pathEvents = mutable.Map.empty[Path, WatchEvent[Path]]
+
+        for (event <- toFilter) {
+            val path = event.context()
+            if (!pathEvents.contains(path))
+                pathEvents.put(path, event)
+        }
+        events.clear()
+        events ++= pathEvents.values ++= noFiltered
+    }
+
+    private def replaceCreateEvents(events: ListBuffer[WatchEvent[Path]]): Unit = {
+        val paths = events.map(_.context())
+        events.filterInPlace(event => {
+            val count = paths.count(_ == event.context())
+            count == 1 || event.kind() == ENTRY_CREATE
+        })
+    }
+
     def dispatchRenameEvents(dir: Path, events: ListBuffer[WatchEvent[Path]]): Unit = {
         if (events.length < 2)
             return
@@ -123,6 +124,19 @@ class FolderSync(localPath: String,
 
     }
 
+    private def handlePacket(packet: Packet, coords: PacketCoordinates): Unit = {
+        val syncPacket = packet.asInstanceOf[FolderSyncPacket]
+        val order = syncPacket.order
+        val affected = toLocal(syncPacket.affectedPath)
+
+        ignoredPaths += affected
+        order match {
+            case "upload" => handleFileDownload(syncPacket)
+            case "rename" => handleRenameOrder(syncPacket)
+            case "delete" => deletePath(affected)
+            case "mkdirs" => fsa.createDirectories(affected)
+        }
+    }
 
     private def deletePath(path: FileAdapter): Unit = {
         if (path.notExists)
@@ -142,20 +156,6 @@ class FolderSync(localPath: String,
         }
     }
 
-    private def handlePacket(packet: Packet, coords: PacketCoordinates): Unit = {
-        val syncPacket = packet.asInstanceOf[FolderSyncPacket]
-        val order = syncPacket.order
-        val affected = toLocal(syncPacket.affectedPath)
-
-        ignoredPaths += affected
-        order match {
-            case "upload" => handleFileDownload(syncPacket)
-            case "rename" => handleRenameOrder(syncPacket)
-            case "delete" => deletePath(affected)
-            case "mkdirs" => fsa.createDirectories(affected)
-        }
-    }
-
     private def handleRenameOrder(syncPacket: FolderSyncPacket): Unit = {
         val newName = new String(syncPacket.content)
         val path = toLocal(syncPacket.affectedPath)
@@ -164,6 +164,9 @@ class FolderSync(localPath: String,
         if (path exists)
             fsa.move(path, renamed)
     }
+
+    private def toLocal(nonLocalPath: String): FileAdapter =
+        fsa.getAdapter(nonLocalPath).getParent(targetNameCount)
 
     private def handleFileDownload(syncPacket: FolderSyncPacket): Unit = {
         val remotePath = syncPacket.affectedPath
@@ -179,10 +182,5 @@ class FolderSync(localPath: String,
         if (path.isWritable)
             path.write(syncPacket.content)
     }
-
-    private def toLocal(nonLocalPath: String): FileAdapter =
-        fsa.getAdapter(nonLocalPath).getParent(targetNameCount)
-
-    private val targetNameCount = targetPath.count(_ == File.separatorChar)
 
 }

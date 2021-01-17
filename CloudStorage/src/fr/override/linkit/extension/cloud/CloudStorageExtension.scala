@@ -16,7 +16,7 @@ class CloudStorageExtension(relay: Relay) extends RelayExtension(relay) {
     private val localConnection = initLocalDb()
 
     override def onLoad(): Unit = {
-        setFragment(new RelayStoredProperties(localConnection, relay.properties))
+        putFragment(new RelayStoredProperties(localConnection, relay.properties))
     }
 
     override def onEnable(): Unit = {

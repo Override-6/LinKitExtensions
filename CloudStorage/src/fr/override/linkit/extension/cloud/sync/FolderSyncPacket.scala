@@ -11,13 +11,14 @@ case class FolderSyncPacket(order: String,
 
 object FolderSyncPacket extends PacketFactory[FolderSyncPacket] {
 
-    def apply(order: String, affectedPath: FileAdapter, content: Array[Byte] = Array())(implicit channel: PacketChannel): FolderSyncPacket = {
-        new FolderSyncPacket(order, affectedPath.toString, content)
-    }
-
+    override val packetClass: Class[FolderSyncPacket] = classOf[FolderSyncPacket]
     private val Type = "[fsync]".getBytes()
     private val Affected = "<affected>".getBytes()
     private val Content = "<content>".getBytes()
+
+    def apply(order: String, affectedPath: FileAdapter, content: Array[Byte] = Array())(implicit channel: PacketChannel): FolderSyncPacket = {
+        new FolderSyncPacket(order, affectedPath.toString, content)
+    }
 
     override def decompose(translator: PacketTranslator)(implicit packet: FolderSyncPacket): Array[Byte] = {
         val orderBytes = packet.order.getBytes()
@@ -36,6 +37,4 @@ object FolderSyncPacket extends PacketFactory[FolderSyncPacket] {
 
         new FolderSyncPacket(order, affectedPath, content)
     }
-
-    override val packetClass: Class[FolderSyncPacket] = classOf[FolderSyncPacket]
 }
