@@ -64,7 +64,7 @@ object InputConsole {
         def getLine: String = {
             if (line == null)
                 synchronized {
-                    wait()
+                    wait
                 }
             line
         }
