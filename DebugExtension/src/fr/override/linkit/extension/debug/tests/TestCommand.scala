@@ -17,11 +17,12 @@ class TestCommand(relay: Relay) extends CommandExecutor {
 
     override def execute(implicit args: Array[String]): Unit = {
         val target = args(0)
+        val targetFrag = args(1)
         val targetEntity = relay.network.getEntity(target).get
-        val remoteFragment = targetEntity.getFragmentController("Test Remote Fragment").get
+        val remoteFragment = targetEntity.getFragmentController(targetFrag).get
 
-        remoteFragment.send(EmptyPacket)
-        remoteFragment.addOnPacketReceived((packet, coords) => println(packet, coords))
+        remoteFragment.sendRequest(EmptyPacket)
+        println(remoteFragment.nextResponse())
 
         /*val modKind = args(0).toInt
         lazy val index = args(1).toInt
