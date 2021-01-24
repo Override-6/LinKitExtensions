@@ -5,5 +5,7 @@ import fr.`override`.linkit.api.Relay
 import fr.`override`.linkit.api.system.CloseReason
 
 class ShutdownCommand(relay: Relay) extends CommandExecutor {
-    override def execute(implicit args: Array[String]): Unit = relay.close(CloseReason.INTERNAL)
+    override def execute(implicit args: Array[String]): Unit = relay.runLater {
+        relay.close(CloseReason.INTERNAL)
+    }
 }
