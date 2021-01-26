@@ -16,10 +16,8 @@ class TestRemoteFragment(relay: Relay) extends RemoteFragment {
     }
 
     override def start(): Unit = {
-        println("START")
     }
 
     override def destroy(): Unit = {
-        println("DESTROYED")
     }
 }
