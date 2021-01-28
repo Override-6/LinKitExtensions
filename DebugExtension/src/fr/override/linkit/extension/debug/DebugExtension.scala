@@ -27,5 +27,9 @@ class DebugExtension(relay: Relay) extends RelayExtension(relay) {
         commandManager.register("msg", new SendMessageCommand(relay))
         commandManager.register("test", new TestCommand(relay))
         commandManager.register("network", new NetworkCommand(relay.network))
+
+        val network = relay.network
+        network.listEntities.foreach(_.addOnStateUpdate(println))
+        network.addOnEntityAdded(_.addOnStateUpdate(println))
     }
 }
