@@ -1,6 +1,6 @@
 package fr.`override`.linkit.`extension`.easysharing.clipboard
 
-import java.awt.datatransfer.DataFlavor
+import java.awt.datatransfer.{DataFlavor, UnsupportedFlavorException}
 import java.awt.image.BufferedImage
 import java.awt.{Image, Toolkit}
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream, File}
@@ -24,6 +24,10 @@ class RemoteClipboardController(controller: RemoteFragmentController)
         pasteImage(image)
     }
 
+    def canPasteCurrentImage: Boolean = isSuccessFull {
+        ownClipboard.getData(DataFlavor.imageFlavor)
+    }
+
     def pasteImage(image: Image): Unit = {
         val buffered = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB)
 
@@ -43,6 +47,10 @@ class RemoteClipboardController(controller: RemoteFragmentController)
         paste(ownClipboard.getData(DataFlavor.stringFlavor).asInstanceOf[String])
     }
 
+    def canPasteCurrentText: Boolean = isSuccessFull {
+        ownClipboard.getData(DataFlavor.stringFlavor)
+    }
+
     def paste(text: String): Unit = {
         sendRequest(WrappedPacket("paste/text", ObjectPacket(text)))
     }
@@ -53,6 +61,10 @@ class RemoteClipboardController(controller: RemoteFragmentController)
                 .map(_.getAbsolutePath)
                 .toArray.asInstanceOf[Array[String]]
         pasteFiles(paths: _*)
+    }
+
+    def canPasteCurrentFiles: Boolean = isSuccessFull {
+        ownClipboard.getData(DataFlavor.javaFileListFlavor)
     }
 
     def pasteFiles(paths: String*): Unit = {
@@ -75,6 +87,17 @@ class RemoteClipboardController(controller: RemoteFragmentController)
     def getFiles: Array[String] = {
         controller.sendRequest(ObjectPacket("get/paths"))
         controller.nextResponse(ObjectPacket).casted
+    }
+
+    private def isSuccessFull(action: => Unit): Boolean = {
+        var success = false
+        try {
+            action
+            success = true
+        } catch {
+            case _: UnsupportedFlavorException => success = true
+        }
+        success
     }
 
 }

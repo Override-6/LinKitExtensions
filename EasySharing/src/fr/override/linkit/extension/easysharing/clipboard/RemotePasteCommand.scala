@@ -25,20 +25,20 @@ class RemotePasteCommand(relay: Relay) extends CommandExecutor {
     }
 
     private def pasteImage(args: Array[String], clipboardController: RemoteClipboardController): Unit = {
-        val path = args(2)
+        val path = args(2).toLowerCase
         if (path == "current") {
             clipboardController.pasteCurrentImage()
-            println("pasted current copied image !")
+            println("Pasted current copied image !")
         } else {
             val image = ImageIO.read(fs.getAdapter(path).newInputStream())
             clipboardController.pasteImage(image)
-            println(s"pasted image at path $path")
+            println(s"Pasted image at path $path")
         }
     }
 
     private def pasteText(args: Array[String], clipboardController: RemoteClipboardController): Unit = {
         if (args.length == 3 && args(2) == "current") {
-            clipboardController.pasteCurrentImage()
+            clipboardController.pasteCurrentText()
             println("Pasted current copied text !")
         } else {
             val text = args.drop(2).mkString(" ")
@@ -60,7 +60,7 @@ class RemotePasteCommand(relay: Relay) extends CommandExecutor {
 
     private def checkArgs(args: Array[String]): Unit = {
         if (args.length < 2)
-            throw CommandException("Syntax: paste <target> <text...>")
+            throw CommandException("Syntax: paste <target> <text|img|paths> <args...>")
     }
 
     private def getClipboard(target: String): RemoteClipboardController = {
