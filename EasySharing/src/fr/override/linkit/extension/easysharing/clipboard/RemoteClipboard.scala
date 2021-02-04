@@ -9,11 +9,12 @@ import java.util
 import fr.`override`.linkit.api.`extension`.fragment.RemoteFragment
 import fr.`override`.linkit.api.network.cache.ObjectPacket
 import fr.`override`.linkit.api.packet.Packet
-import fr.`override`.linkit.api.packet.channel.CommunicationPacketChannel
+import fr.`override`.linkit.api.packet.traffic.dedicated.{CommunicationPacketChannel, DedicatedPacketSender}
 import fr.`override`.linkit.api.utils.WrappedPacket
 import javax.imageio.ImageIO
 
-class RemoteClipboard extends RemoteFragment with ClipboardOwner {
+class RemoteClipboard(broadcaster: DedicatedPacketSender) extends RemoteFragment(broadcaster) with ClipboardOwner {
+
     override val nameIdentifier: String = "RemoteClipboard"
     private val clipboard = Toolkit.getDefaultToolkit.getSystemClipboard
 

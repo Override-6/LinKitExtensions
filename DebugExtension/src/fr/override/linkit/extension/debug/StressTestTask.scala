@@ -1,8 +1,8 @@
 package fr.`override`.linkit.`extension`.debug
 
 import fr.`override`.linkit.`extension`.debug.StressTestTask.{Type, download, upload}
-import fr.`override`.linkit.api.packet.channel.PacketChannel
 import fr.`override`.linkit.api.packet.fundamental.{DataPacket, TaskInitPacket}
+import fr.`override`.linkit.api.packet.traffic.dedicated.PacketChannel
 import fr.`override`.linkit.api.task.{Task, TaskExecutor, TaskInitInfo}
 
 /**
