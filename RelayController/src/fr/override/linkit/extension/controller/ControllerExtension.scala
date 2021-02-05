@@ -11,7 +11,7 @@ class ControllerExtension(relay: Relay) extends RelayExtension(relay) {
     private val commandManager = new CommandManager()
 
     override def onLoad(): Unit = {
-        putFragment(commandManager)
+        putFragment(_ => commandManager)
     }
 
     override def onEnable(): Unit = {

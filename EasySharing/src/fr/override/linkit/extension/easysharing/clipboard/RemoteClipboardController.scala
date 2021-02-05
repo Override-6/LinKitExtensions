@@ -6,8 +6,8 @@ import java.awt.{Image, Toolkit}
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream, File}
 import java.util
 
-import fr.`override`.linkit.api.network.cache.ObjectPacket
 import fr.`override`.linkit.api.network.{AbstractRemoteFragmentController, RemoteFragmentController}
+import fr.`override`.linkit.api.packet.fundamental.ValPacket
 import fr.`override`.linkit.api.packet.{Packet, PacketCoordinates}
 import fr.`override`.linkit.api.utils.WrappedPacket
 import javax.imageio.ImageIO
@@ -40,7 +40,7 @@ class RemoteClipboardController(controller: RemoteFragmentController)
     def pasteImage(image: BufferedImage): Unit = {
         val out = new ByteArrayOutputStream()
         ImageIO.write(image, "png", out)
-        sendRequest(WrappedPacket("paste/img", ObjectPacket(out.toByteArray)))
+        sendRequest(WrappedPacket("paste/img", ValPacket(out.toByteArray)))
     }
 
     def pasteCurrentText(): Unit = {
@@ -52,7 +52,7 @@ class RemoteClipboardController(controller: RemoteFragmentController)
     }
 
     def paste(text: String): Unit = {
-        sendRequest(WrappedPacket("paste/text", ObjectPacket(text)))
+        sendRequest(WrappedPacket("paste/text", ValPacket(text)))
     }
 
     def pasteCurrentFiles(): Unit = {
@@ -68,25 +68,25 @@ class RemoteClipboardController(controller: RemoteFragmentController)
     }
 
     def pasteFiles(paths: String*): Unit = {
-        sendRequest(WrappedPacket("paste/paths", ObjectPacket(paths.toArray)))
+        sendRequest(WrappedPacket("paste/paths", ValPacket(paths.toArray)))
     }
 
     def getImage: BufferedImage = {
-        controller.sendRequest(ObjectPacket("get/img"))
-        val bytes = controller.nextResponse(ObjectPacket).casted
+        controller.sendRequest(ValPacket("get/img"))
+        val bytes = controller.nextResponse(ValPacket).casted
 
         val buffer = new ByteArrayInputStream(bytes)
         ImageIO.read(buffer)
     }
 
     def getText: String = {
-        controller.sendRequest(ObjectPacket("get/text"))
-        controller.nextResponse(ObjectPacket).casted
+        controller.sendRequest(ValPacket("get/text"))
+        controller.nextResponse(ValPacket).casted
     }
 
     def getFiles: Array[String] = {
-        controller.sendRequest(ObjectPacket("get/paths"))
-        controller.nextResponse(ObjectPacket).casted
+        controller.sendRequest(ValPacket("get/paths"))
+        controller.nextResponse(ValPacket).casted
     }
 
     private def isSuccessFull(action: => Unit): Boolean = {

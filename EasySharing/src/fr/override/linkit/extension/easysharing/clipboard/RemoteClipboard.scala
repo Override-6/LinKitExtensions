@@ -7,46 +7,46 @@ import java.io.{ByteArrayInputStream, ByteArrayOutputStream, File}
 import java.util
 
 import fr.`override`.linkit.api.`extension`.fragment.RemoteFragment
-import fr.`override`.linkit.api.network.cache.ObjectPacket
 import fr.`override`.linkit.api.packet.Packet
+import fr.`override`.linkit.api.packet.fundamental.ValPacket
 import fr.`override`.linkit.api.packet.traffic.dedicated.{CommunicationPacketChannel, DedicatedPacketSender}
 import fr.`override`.linkit.api.utils.WrappedPacket
 import javax.imageio.ImageIO
 
-class RemoteClipboard(broadcaster: DedicatedPacketSender) extends RemoteFragment(broadcaster) with ClipboardOwner {
+class RemoteClipboard(broadcaster: DedicatedPacketSender) extends RemoteFragment() with ClipboardOwner {
 
     override val nameIdentifier: String = "RemoteClipboard"
     private val clipboard = Toolkit.getDefaultToolkit.getSystemClipboard
 
     override def handleRequest(packet: Packet, responseChannel: CommunicationPacketChannel): Unit = {
         packet match {
-            case WrappedPacket("paste/text", ObjectPacket(text: String)) =>
+            case WrappedPacket("paste/text", ValPacket(text: String)) =>
                 val transferableText = new StringSelection(text)
                 clipboard.setContents(transferableText, this)
 
-            case WrappedPacket("paste/img", ObjectPacket(bytes: Array[Byte])) =>
+            case WrappedPacket("paste/img", ValPacket(bytes: Array[Byte])) =>
                 val buffer = new ByteArrayInputStream(bytes)
                 val buffImage = ImageIO.read(buffer)
                 val transferableImage = new TransferableImage(buffImage)
                 clipboard.setContents(transferableImage, this)
 
-            case WrappedPacket("paste/paths", ObjectPacket(paths: String)) =>
+            case WrappedPacket("paste/paths", ValPacket(paths: String)) =>
                 throw new UnsupportedOperationException("Not implemented yet.")
 
-            case ObjectPacket("get/text") =>
+            case ValPacket("get/text") =>
                 val data = clipboard.getData(DataFlavor.stringFlavor).asInstanceOf[String]
-                responseChannel.sendResponse(ObjectPacket(data))
+                responseChannel.sendResponse(ValPacket(data))
 
-            case ObjectPacket("get/img") =>
+            case ValPacket("get/img") =>
                 val bytes = currentImageBytes
-                responseChannel.sendResponse(ObjectPacket(bytes))
+                responseChannel.sendResponse(ValPacket(bytes))
 
-            case ObjectPacket("get/paths") =>
+            case ValPacket("get/paths") =>
                 val files = clipboard.getData(DataFlavor.javaFileListFlavor).asInstanceOf[util.List[File]]
                 val paths = files.stream()
                         .map(_.getAbsolutePath)
                         .toArray
-                responseChannel.sendResponse(ObjectPacket(paths))
+                responseChannel.sendResponse(ValPacket(paths))
         }
     }
 

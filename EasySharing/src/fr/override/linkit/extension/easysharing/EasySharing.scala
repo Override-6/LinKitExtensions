@@ -9,7 +9,7 @@ import fr.`override`.linkit.api.`extension`.RelayExtension
 class EasySharing(relay: Relay) extends RelayExtension(relay) {
 
     override def onLoad(): Unit = {
-        putFragment(new RemoteClipboard())
+        putFragment(new RemoteClipboard(_))
     }
 
     override def onEnable(): Unit = {
