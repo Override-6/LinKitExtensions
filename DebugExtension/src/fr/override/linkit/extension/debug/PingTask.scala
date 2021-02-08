@@ -16,7 +16,7 @@ class PingTask(private val targetId: String) extends Task[Long](targetId) {
      * */
     override def execute(): Unit = {
         println(s"(channel id ${channel.identifier})")
-        channel.sendPacket(EmptyPacket)
+        channel.send(EmptyPacket)
         val p1 = testPacket(EmptyPacket)
         val p2 = testPacket(EmptyPacket)
         val p3 = testPacket(EmptyPacket)
@@ -29,7 +29,7 @@ class PingTask(private val targetId: String) extends Task[Long](targetId) {
     def testPacket(packet: Packet): Long = {
         val t0 = System.currentTimeMillis()
 
-        channel.sendPacket(packet)
+        channel.send(packet)
         channel.nextPacket()
 
         val t1 = System.currentTimeMillis()
@@ -51,7 +51,7 @@ object PingTask {
             channel.nextPacket()
             for (_ <- 1 to 5) {
                 channel.nextPacket()
-                channel.sendPacket(EmptyPacket)
+                channel.send(EmptyPacket)
             }
         }
 

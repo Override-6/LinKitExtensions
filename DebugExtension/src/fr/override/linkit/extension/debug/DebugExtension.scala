@@ -11,7 +11,7 @@ import fr.`override`.linkit.api.`extension`.RelayExtension
 class DebugExtension(relay: Relay) extends RelayExtension(relay) {
 
     override def onLoad(): Unit = {
-        putFragment(_ => new TestRemoteFragment(relay))
+        putFragment(new TestRemoteFragment(relay))
     }
 
     override def onEnable(): Unit = {

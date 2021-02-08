@@ -7,18 +7,19 @@ import java.io.{ByteArrayInputStream, ByteArrayOutputStream, File}
 import java.util
 
 import fr.`override`.linkit.api.`extension`.fragment.RemoteFragment
-import fr.`override`.linkit.api.packet.Packet
 import fr.`override`.linkit.api.packet.fundamental.ValPacket
-import fr.`override`.linkit.api.packet.traffic.dedicated.{CommunicationPacketChannel, DedicatedPacketSender}
+import fr.`override`.linkit.api.packet.{Packet, PacketCoordinates}
 import fr.`override`.linkit.api.utils.WrappedPacket
 import javax.imageio.ImageIO
 
-class RemoteClipboard(broadcaster: DedicatedPacketSender) extends RemoteFragment() with ClipboardOwner {
+class RemoteClipboard extends RemoteFragment with ClipboardOwner {
 
     override val nameIdentifier: String = "RemoteClipboard"
     private val clipboard = Toolkit.getDefaultToolkit.getSystemClipboard
 
-    override def handleRequest(packet: Packet, responseChannel: CommunicationPacketChannel): Unit = {
+    override def handleRequest(packet: Packet, coords: PacketCoordinates): Unit = {
+        val sender = coords.senderID
+
         packet match {
             case WrappedPacket("paste/text", ValPacket(text: String)) =>
                 val transferableText = new StringSelection(text)
@@ -35,18 +36,18 @@ class RemoteClipboard(broadcaster: DedicatedPacketSender) extends RemoteFragment
 
             case ValPacket("get/text") =>
                 val data = clipboard.getData(DataFlavor.stringFlavor).asInstanceOf[String]
-                responseChannel.sendResponse(ValPacket(data))
+                packetSender().sendTo(sender, ValPacket(data))
 
             case ValPacket("get/img") =>
                 val bytes = currentImageBytes
-                responseChannel.sendResponse(ValPacket(bytes))
+                packetSender().sendTo(sender, ValPacket(bytes))
 
             case ValPacket("get/paths") =>
                 val files = clipboard.getData(DataFlavor.javaFileListFlavor).asInstanceOf[util.List[File]]
                 val paths = files.stream()
                         .map(_.getAbsolutePath)
                         .toArray
-                responseChannel.sendResponse(ValPacket(paths))
+                packetSender().sendTo(sender, ValPacket(paths))
         }
     }
 
@@ -55,7 +56,7 @@ class RemoteClipboard(broadcaster: DedicatedPacketSender) extends RemoteFragment
         val buffered = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB)
 
         val graphics = buffered.getGraphics
-        graphics.drawImage(image, 0,0, null)
+        graphics.drawImage(image, 0, 0, null)
         graphics.dispose()
 
         val out = new ByteArrayOutputStream()
