@@ -7,9 +7,8 @@ import java.io.{ByteArrayInputStream, ByteArrayOutputStream, File}
 import java.util
 
 import fr.`override`.linkit.api.`extension`.fragment.RemoteFragment
-import fr.`override`.linkit.api.packet.fundamental.ValPacket
+import fr.`override`.linkit.api.packet.fundamental.{ValPacket, WrappedPacket}
 import fr.`override`.linkit.api.packet.{Packet, PacketCoordinates}
-import fr.`override`.linkit.api.utils.WrappedPacket
 import javax.imageio.ImageIO
 
 class RemoteClipboard extends RemoteFragment with ClipboardOwner {
