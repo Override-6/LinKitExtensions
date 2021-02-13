@@ -30,7 +30,7 @@ class PingTask(private val targetId: String) extends Task[Long](targetId) {
         val t0 = System.currentTimeMillis()
 
         channel.send(packet)
-        channel.nextPacket()
+        channel.nextPacket
 
         val t1 = System.currentTimeMillis()
         val time = t1 - t0
@@ -48,9 +48,9 @@ object PingTask {
 
     case class Completer() extends TaskExecutor {
         override def execute(): Unit = {
-            channel.nextPacket()
+            channel.nextPacket
             for (_ <- 1 to 5) {
-                channel.nextPacket()
+                channel.nextPacket
                 channel.send(EmptyPacket)
             }
         }

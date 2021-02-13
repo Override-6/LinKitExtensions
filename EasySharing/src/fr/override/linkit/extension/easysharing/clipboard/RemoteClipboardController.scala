@@ -72,7 +72,7 @@ class RemoteClipboardController(controller: RemoteFragmentController)
 
     def getImage: BufferedImage = {
         controller.sendRequest(ValPacket("get/img"))
-        val bytes = controller.nextResponse(ValPacket).casted
+        val bytes = controller.nextResponse[ValPacket].casted
 
         val buffer = new ByteArrayInputStream(bytes)
         ImageIO.read(buffer)
@@ -80,12 +80,12 @@ class RemoteClipboardController(controller: RemoteFragmentController)
 
     def getText: String = {
         controller.sendRequest(ValPacket("get/text"))
-        controller.nextResponse(ValPacket).casted
+        controller.nextResponse[ValPacket].casted
     }
 
     def getFiles: Array[String] = {
         controller.sendRequest(ValPacket("get/paths"))
-        controller.nextResponse(ValPacket).casted
+        controller.nextResponse[ValPacket].casted
     }
 
     private def isSuccessFull(action: => Unit): Boolean = {

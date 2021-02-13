@@ -8,7 +8,7 @@ import java.util
 
 import fr.`override`.linkit.api.`extension`.fragment.RemoteFragment
 import fr.`override`.linkit.api.packet.fundamental.{ValPacket, WrappedPacket}
-import fr.`override`.linkit.api.packet.{Packet, PacketCoordinates}
+import fr.`override`.linkit.api.packet.{DedicatedPacketCoordinates, Packet}
 import javax.imageio.ImageIO
 
 class RemoteClipboard extends RemoteFragment with ClipboardOwner {
@@ -16,7 +16,7 @@ class RemoteClipboard extends RemoteFragment with ClipboardOwner {
     override val nameIdentifier: String = "RemoteClipboard"
     private val clipboard = Toolkit.getDefaultToolkit.getSystemClipboard
 
-    override def handleRequest(packet: Packet, coords: PacketCoordinates): Unit = {
+    override def handleRequest(packet: Packet, coords: DedicatedPacketCoordinates): Unit = {
         val sender = coords.senderID
 
         packet match {
@@ -35,18 +35,18 @@ class RemoteClipboard extends RemoteFragment with ClipboardOwner {
 
             case ValPacket("get/text") =>
                 val data = clipboard.getData(DataFlavor.stringFlavor).asInstanceOf[String]
-                packetSender().sendTo(sender, ValPacket(data))
+                packetSender().sendTo(ValPacket(data), sender)
 
             case ValPacket("get/img") =>
                 val bytes = currentImageBytes
-                packetSender().sendTo(sender, ValPacket(bytes))
+                packetSender().sendTo(ValPacket(bytes), sender)
 
             case ValPacket("get/paths") =>
                 val files = clipboard.getData(DataFlavor.javaFileListFlavor).asInstanceOf[util.List[File]]
                 val paths = files.stream()
                         .map(_.getAbsolutePath)
                         .toArray
-                packetSender().sendTo(sender, ValPacket(paths))
+                packetSender().sendTo(ValPacket(paths), sender)
         }
     }
 

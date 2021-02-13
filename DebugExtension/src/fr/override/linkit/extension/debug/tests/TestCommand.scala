@@ -22,7 +22,7 @@ class TestCommand(relay: Relay) extends CommandExecutor {
         val remoteFragment = targetEntity.getFragmentController(targetFrag).get
 
         remoteFragment.sendRequest(EmptyPacket)
-        println(remoteFragment.nextResponse())
+        println(remoteFragment.nextResponse)
 
         /*val modKind = args(0).toInt
         lazy val index = args(1).toInt
