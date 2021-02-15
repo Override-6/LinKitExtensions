@@ -1,14 +1,15 @@
-package fr.`override`.linkit.`extension`.easysharing.clipboard
+package fr.`override`.linkit.extension.easysharing.clipboard
+
+import fr.`override`.linkit.api.network.{AbstractRemoteFragmentController, RemoteFragmentController}
+import fr.`override`.linkit.api.packet.fundamental.RefPacket.{ArrayPacket, ObjectPacket, StringPacket}
+import fr.`override`.linkit.api.packet.fundamental.WrappedPacket
+import fr.`override`.linkit.api.packet.{Packet, PacketCoordinates}
 
 import java.awt.datatransfer.{DataFlavor, UnsupportedFlavorException}
 import java.awt.image.BufferedImage
 import java.awt.{Image, Toolkit}
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream, File}
 import java.util
-
-import fr.`override`.linkit.api.network.{AbstractRemoteFragmentController, RemoteFragmentController}
-import fr.`override`.linkit.api.packet.fundamental.{ValPacket, WrappedPacket}
-import fr.`override`.linkit.api.packet.{Packet, PacketCoordinates}
 import javax.imageio.ImageIO
 
 class RemoteClipboardController(controller: RemoteFragmentController)
@@ -39,7 +40,7 @@ class RemoteClipboardController(controller: RemoteFragmentController)
     def pasteImage(image: BufferedImage): Unit = {
         val out = new ByteArrayOutputStream()
         ImageIO.write(image, "png", out)
-        sendRequest(WrappedPacket("paste/img", ValPacket(out.toByteArray)))
+        sendRequest(WrappedPacket("paste/img", ObjectPacket(out.toByteArray)))
     }
 
     def pasteCurrentText(): Unit = {
@@ -51,7 +52,7 @@ class RemoteClipboardController(controller: RemoteFragmentController)
     }
 
     def paste(text: String): Unit = {
-        sendRequest(WrappedPacket("paste/text", ValPacket(text)))
+        sendRequest(WrappedPacket("paste/text", StringPacket(text)))
     }
 
     def pasteCurrentFiles(): Unit = {
@@ -67,25 +68,25 @@ class RemoteClipboardController(controller: RemoteFragmentController)
     }
 
     def pasteFiles(paths: String*): Unit = {
-        sendRequest(WrappedPacket("paste/paths", ValPacket(paths.toArray)))
+        sendRequest(WrappedPacket("paste/paths", ArrayPacket(paths.toArray)))
     }
 
     def getImage: BufferedImage = {
-        controller.sendRequest(ValPacket("get/img"))
-        val bytes = controller.nextResponse[ValPacket].casted
+        controller.sendRequest(StringPacket("get/img"))
+        val bytes = controller.nextResponse[ObjectPacket].casted
 
         val buffer = new ByteArrayInputStream(bytes)
         ImageIO.read(buffer)
     }
 
     def getText: String = {
-        controller.sendRequest(ValPacket("get/text"))
-        controller.nextResponse[ValPacket].casted
+        controller.sendRequest(StringPacket("get/text"))
+        controller.nextResponse[StringPacket].value
     }
 
     def getFiles: Array[String] = {
-        controller.sendRequest(ValPacket("get/paths"))
-        controller.nextResponse[ValPacket].casted
+        controller.sendRequest(StringPacket("get/paths"))
+        controller.nextResponse[ArrayPacket[String]].value
     }
 
     private def isSuccessFull(action: => Unit): Boolean = {

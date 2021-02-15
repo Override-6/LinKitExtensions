@@ -1,21 +1,29 @@
 package fr.`override`.linkit.`extension`.easysharing.screen
 
+import com.sun.glass.ui.Application
 import fr.`override`.linkit.api.`extension`.fragment.RemoteFragment
-import fr.`override`.linkit.api.packet.fundamental.EmptyPacket
+import fr.`override`.linkit.api.network.Network
+import fr.`override`.linkit.api.network.cache.collection.SharedCollection
 import fr.`override`.linkit.api.packet.{DedicatedPacketCoordinates, Packet}
-import org.bytedeco.javacv.FFmpegFrameGrabber
+import javafx.geometry.Rectangle2D
+import javafx.scene.image.{PixelFormat, WritableImage}
+import javafx.scene.robot.Robot
 
 import scala.collection.mutable
 
-class RemoteScreen extends RemoteFragment {
+class RemoteScreen(network: Network) extends RemoteFragment {
     override val nameIdentifier: String = "RemoteFragment"
-    @volatile private var viewers = mutable.HashSet.empty[String]
-    private val listeningScreens = mutable.Map.empty[String, RemoteScreenViewer]
+
+    private val selfEntity = network.selfEntity
+    private val ownCache = selfEntity.cache
+    private val relayID = selfEntity.identifier
+    private val viewers = ownCache.get(18, SharedCollection[String])
+    private val spectatingScreens = mutable.HashMap.empty[String, RemoteScreenViewer]
 
     override def handleRequest(packet: Packet, coords: DedicatedPacketCoordinates): Unit = {
         packet match {
-            case EmptyPacket => viewers += coords.senderID
-            case StreamPacket(frameBytes) => listeningScreens(coords.senderID).pushFrame(frameBytes)
+            case StreamPacket(frameBuff) =>
+                spectatingScreens.get(coords.senderID).foreach(_.pushFrame(frameBuff))
         }
     }
 
@@ -27,25 +35,56 @@ class RemoteScreen extends RemoteFragment {
         packetSender().close()
     }
 
-    private def startScreenRecorder(): Unit = new Thread(() => {
-        val x = 0
-        val y = 0
-        val w = 1024
-        val h = 1080 // specify the region of screen to grab
-        val grabber = new FFmpegFrameGrabber(":0.0+" + x + "," + y)
-        grabber.setFormat("x11grab")
-        grabber.setImageWidth(w)
-        grabber.setImageHeight(h)
-        grabber.start()
+    def spectate(target: String): RemoteScreenViewer = {
+        val targetCache = network.getEntity(target).get.cache
+        spectatingScreens.getOrElseUpdate(target, {
+            targetCache.get(18, SharedCollection[String])
+                    .add(relayID)
+            new RemoteScreenViewer()
+        })
+    }
+
+    def isSpectating(target: String): Boolean = spectatingScreens.contains(target)
+
+    def stopSpectating(target: String): Unit = {
+        val targetCache = network.getEntity(target).get.cache
+        targetCache.get(18, SharedCollection[String])
+                .remove(relayID)
+        spectatingScreens.remove(target)
+    }
+
+    def isViewing(target: String): Boolean = viewers.contains(target)
+
+    private def startScreenRecorder(): Unit = Application.run(() => {
+        val region = new Rectangle2D(0, 0, 1920, 1080)
+        val robot = new Robot()
+        val writable = new WritableImage(1920, 1080)
+        val reader = writable.getPixelReader
+        val buffer = new Array[Byte](1920 * 1080)
+        viewers.addListener((_, _, _) => viewers.synchronized {
+            viewers.notifyAll()
+        })
 
         while (true) {
-            val frameBuffer = grabber.grab().data
-            packetSender().sendTo(StreamPacket(frameBuffer.array()), viewers.toSeq: _*)
+            while (viewers.nonEmpty) {
+                robot.getScreenCapture(writable, region)
+                println("Capture created !")
+                reader.getPixels(0, 0, 1920, 1080, PixelFormat.getByteBgraInstance, buffer, 0, 1)
+                packetSender().sendTo(StreamPacket(buffer), viewers.toSeq: _*)
+                println("Bytes sent !!")
+            }
+            println("NO VIEWERS LEFT.")
+            viewers.synchronized {
+                println("WAITING FOR VIEWERS")
+                viewers.wait()
+                println("STREAM STARTED AGAIN.")
+            }
         }
-    }).start()
+    })
 
     startScreenRecorder()
 
-    private case class StreamPacket(val stream: Array[Byte]) extends Packet
+
+    private case class StreamPacket(stream: Array[Byte]) extends Packet
 
 }

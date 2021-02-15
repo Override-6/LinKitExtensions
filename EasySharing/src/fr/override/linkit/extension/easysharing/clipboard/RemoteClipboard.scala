@@ -1,14 +1,15 @@
-package fr.`override`.linkit.`extension`.easysharing.clipboard
+package fr.`override`.linkit.extension.easysharing.clipboard
+
+import fr.`override`.linkit.api.`extension`.fragment.RemoteFragment
+import fr.`override`.linkit.api.packet.fundamental.RefPacket.{ArrayPacket, ObjectPacket}
+import fr.`override`.linkit.api.packet.fundamental.WrappedPacket
+import fr.`override`.linkit.api.packet.{DedicatedPacketCoordinates, Packet}
 
 import java.awt.datatransfer._
 import java.awt.image.BufferedImage
 import java.awt.{Image, Toolkit}
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream, File}
 import java.util
-
-import fr.`override`.linkit.api.`extension`.fragment.RemoteFragment
-import fr.`override`.linkit.api.packet.fundamental.{ValPacket, WrappedPacket}
-import fr.`override`.linkit.api.packet.{DedicatedPacketCoordinates, Packet}
 import javax.imageio.ImageIO
 
 class RemoteClipboard extends RemoteFragment with ClipboardOwner {
@@ -20,33 +21,33 @@ class RemoteClipboard extends RemoteFragment with ClipboardOwner {
         val sender = coords.senderID
 
         packet match {
-            case WrappedPacket("paste/text", ValPacket(text: String)) =>
+            case WrappedPacket("paste/text", ObjectPacket(text: String)) =>
                 val transferableText = new StringSelection(text)
                 clipboard.setContents(transferableText, this)
 
-            case WrappedPacket("paste/img", ValPacket(bytes: Array[Byte])) =>
+            case WrappedPacket("paste/img", ObjectPacket(bytes: Array[Byte])) =>
                 val buffer = new ByteArrayInputStream(bytes)
                 val buffImage = ImageIO.read(buffer)
                 val transferableImage = new TransferableImage(buffImage)
                 clipboard.setContents(transferableImage, this)
 
-            case WrappedPacket("paste/paths", ValPacket(paths: String)) =>
+            case WrappedPacket("paste/paths", ArrayPacket(paths)) =>
                 throw new UnsupportedOperationException("Not implemented yet.")
 
-            case ValPacket("get/text") =>
+            case ObjectPacket("get/text") =>
                 val data = clipboard.getData(DataFlavor.stringFlavor).asInstanceOf[String]
-                packetSender().sendTo(ValPacket(data), sender)
+                packetSender().sendTo(ObjectPacket(data), sender)
 
-            case ValPacket("get/img") =>
+            case ObjectPacket("get/img") =>
                 val bytes = currentImageBytes
-                packetSender().sendTo(ValPacket(bytes), sender)
+                packetSender().sendTo(ObjectPacket(bytes), sender)
 
-            case ValPacket("get/paths") =>
+            case ObjectPacket("get/paths") =>
                 val files = clipboard.getData(DataFlavor.javaFileListFlavor).asInstanceOf[util.List[File]]
                 val paths = files.stream()
                         .map(_.getAbsolutePath)
                         .toArray
-                packetSender().sendTo(ValPacket(paths), sender)
+                packetSender().sendTo(ObjectPacket(paths), sender)
         }
     }
 
