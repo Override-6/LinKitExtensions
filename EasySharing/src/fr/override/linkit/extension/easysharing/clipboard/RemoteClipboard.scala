@@ -1,7 +1,7 @@
 package fr.`override`.linkit.extension.easysharing.clipboard
 
 import fr.`override`.linkit.api.`extension`.fragment.RemoteFragment
-import fr.`override`.linkit.api.packet.fundamental.RefPacket.{ArrayPacket, ObjectPacket}
+import fr.`override`.linkit.api.packet.fundamental.RefPacket.{ArrayRefPacket, ObjectPacket}
 import fr.`override`.linkit.api.packet.fundamental.WrappedPacket
 import fr.`override`.linkit.api.packet.{DedicatedPacketCoordinates, Packet}
 
@@ -31,7 +31,7 @@ class RemoteClipboard extends RemoteFragment with ClipboardOwner {
                 val transferableImage = new TransferableImage(buffImage)
                 clipboard.setContents(transferableImage, this)
 
-            case WrappedPacket("paste/paths", ArrayPacket(paths)) =>
+            case WrappedPacket("paste/paths", ArrayRefPacket(paths)) =>
                 throw new UnsupportedOperationException("Not implemented yet.")
 
             case ObjectPacket("get/text") =>

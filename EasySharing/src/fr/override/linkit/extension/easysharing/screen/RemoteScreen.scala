@@ -1,6 +1,7 @@
-package fr.`override`.linkit.`extension`.easysharing.screen
+package fr.`override`.linkit.extension.easysharing.screen
 
 import com.sun.glass.ui.Application
+import fr.`override`.linkit.`extension`.easysharing.screen.RemoteScreen.StreamPacket
 import fr.`override`.linkit.api.`extension`.fragment.RemoteFragment
 import fr.`override`.linkit.api.network.Network
 import fr.`override`.linkit.api.network.cache.collection.SharedCollection
@@ -60,7 +61,7 @@ class RemoteScreen(network: Network) extends RemoteFragment {
         val robot = new Robot()
         val writable = new WritableImage(1920, 1080)
         val reader = writable.getPixelReader
-        val buffer = new Array[Byte](1920 * 1080)
+        val buffer = new Array[Int](1920 * 1080)
         viewers.addListener((_, _, _) => viewers.synchronized {
             viewers.notifyAll()
         })
@@ -69,7 +70,7 @@ class RemoteScreen(network: Network) extends RemoteFragment {
             while (viewers.nonEmpty) {
                 robot.getScreenCapture(writable, region)
                 println("Capture created !")
-                reader.getPixels(0, 0, 1920, 1080, PixelFormat.getByteBgraInstance, buffer, 0, 1)
+                reader.getPixels(0, 0, 1920, 1080, PixelFormat.getIntArgbInstance, buffer, 0, region.getWidth.toInt)
                 packetSender().sendTo(StreamPacket(buffer), viewers.toSeq: _*)
                 println("Bytes sent !!")
             }
@@ -85,6 +86,9 @@ class RemoteScreen(network: Network) extends RemoteFragment {
     startScreenRecorder()
 
 
-    private case class StreamPacket(stream: Array[Byte]) extends Packet
 
+}
+
+object RemoteScreen {
+    private case class StreamPacket(stream: Array[Int]) extends Packet
 }
