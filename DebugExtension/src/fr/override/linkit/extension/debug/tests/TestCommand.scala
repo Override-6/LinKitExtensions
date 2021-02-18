@@ -1,4 +1,4 @@
-package fr.`override`.linkit.`extension`.debug.tests
+package fr.`override`.linkit.extension.debug.tests
 
 import fr.`override`.linkit.`extension`.controller.cli.CommandExecutor
 import fr.`override`.linkit.api.Relay

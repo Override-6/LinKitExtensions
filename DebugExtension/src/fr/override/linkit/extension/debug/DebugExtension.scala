@@ -1,4 +1,4 @@
-package fr.`override`.linkit.`extension`.debug
+package fr.`override`.linkit.extension.debug
 
 import fr.`override`.linkit.`extension`.controller.ControllerExtension
 import fr.`override`.linkit.`extension`.controller.cli.CommandManager
