@@ -1,5 +1,7 @@
 package fr.`override`.linkit.extension.easysharing.screen
 
+import java.awt.Robot
+
 import com.sun.glass.ui.Application
 import fr.`override`.linkit.`extension`.easysharing.screen.RemoteScreen.StreamPacket
 import fr.`override`.linkit.api.`extension`.fragment.RemoteFragment
@@ -68,7 +70,7 @@ class RemoteScreen(network: Network) extends RemoteFragment {
 
         while (true) {
             while (viewers.nonEmpty) {
-                robot.getScreenCapture(writable, region)
+                //robot.getScreenCapture(writable, region)
                 println("Capture created !")
                 reader.getPixels(0, 0, 1920, 1080, PixelFormat.getIntArgbInstance, buffer, 0, region.getWidth.toInt)
                 packetSender().sendTo(StreamPacket(buffer), viewers.toSeq: _*)
