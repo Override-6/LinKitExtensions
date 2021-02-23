@@ -1,9 +1,9 @@
 package fr.`override`.linkit.`extension`.debug.commands
 
-import java.time.{Duration, LocalDateTime}
-
 import fr.`override`.linkit.`extension`.controller.cli.CommandExecutor
 import fr.`override`.linkit.api.network.{Network, NetworkEntity}
+
+import java.time.{Duration, LocalDateTime}
 
 class NetworkCommand(network: Network) extends CommandExecutor {
 
@@ -30,8 +30,8 @@ class NetworkCommand(network: Network) extends CommandExecutor {
     private def genDescription(entity: NetworkEntity): Unit = {
         val name = entity.identifier
         val remoteFragments = entity.listRemoteFragmentControllers.map(_.nameIdentifier).mkString(", ")
-        val apiVersion = entity.getApiVersion
-        val implVersion = entity.getRelayVersion
+        val apiVersion = entity.apiVersion
+        val implVersion = entity.relayVersion
         val connectionDate = entity.connectionDate
         val connectionDuration = getDurationAsString(connectionDate.toLocalDateTime)
 
