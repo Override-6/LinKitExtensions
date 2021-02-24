@@ -30,8 +30,8 @@ class NetworkCommand(network: Network) extends CommandExecutor {
     private def genDescription(entity: NetworkEntity): Unit = {
         val name = entity.identifier
         val remoteFragments = entity.listRemoteFragmentControllers.map(_.nameIdentifier).mkString(", ")
-        val apiVersion = entity.getApiVersion
-        val implVersion = entity.getRelayVersion
+        val apiVersion = entity.apiVersion
+        val implVersion = entity.relayVersion
         val connectionDate = entity.connectionDate
         val connectionDuration = getDurationAsString(connectionDate.toLocalDateTime)
 

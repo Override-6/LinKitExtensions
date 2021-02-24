@@ -10,7 +10,6 @@ import fr.`override`.linkit.api.network.cache.collection.SharedCollection
 import fr.`override`.linkit.api.packet.{DedicatedPacketCoordinates, Packet}
 import javafx.geometry.Rectangle2D
 import javafx.scene.image.{PixelFormat, WritableImage}
-import javafx.scene.robot.Robot
 
 import scala.collection.mutable
 
@@ -60,7 +59,7 @@ class RemoteScreen(network: Network) extends RemoteFragment {
 
     private def startScreenRecorder(): Unit = Application.run(() => {
         val region = new Rectangle2D(0, 0, 1920, 1080)
-        val robot = new Robot()
+        //val robot = new Robot()
         val writable = new WritableImage(1920, 1080)
         val reader = writable.getPixelReader
         val buffer = new Array[Int](1920 * 1080)
