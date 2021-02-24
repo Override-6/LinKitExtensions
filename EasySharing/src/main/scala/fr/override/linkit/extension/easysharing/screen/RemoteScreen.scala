@@ -1,15 +1,10 @@
 package fr.`override`.linkit.extension.easysharing.screen
 
-import java.awt.Robot
-
-import com.sun.glass.ui.Application
 import fr.`override`.linkit.`extension`.easysharing.screen.RemoteScreen.StreamPacket
 import fr.`override`.linkit.api.`extension`.fragment.RemoteFragment
 import fr.`override`.linkit.api.network.Network
 import fr.`override`.linkit.api.network.cache.collection.SharedCollection
 import fr.`override`.linkit.api.packet.{DedicatedPacketCoordinates, Packet}
-import javafx.geometry.Rectangle2D
-import javafx.scene.image.{PixelFormat, WritableImage}
 
 import scala.collection.mutable
 
@@ -57,7 +52,7 @@ class RemoteScreen(network: Network) extends RemoteFragment {
 
     def isViewing(target: String): Boolean = viewers.contains(target)
 
-    private def startScreenRecorder(): Unit = Application.run(() => {
+    /*private def startScreenRecorder(): Unit = Application.run(() => {
         val region = new Rectangle2D(0, 0, 1920, 1080)
         //val robot = new Robot()
         val writable = new WritableImage(1920, 1080)
@@ -86,7 +81,7 @@ class RemoteScreen(network: Network) extends RemoteFragment {
 
     startScreenRecorder()
 
-
+*/
 
 }
 
