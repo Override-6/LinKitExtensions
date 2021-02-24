@@ -1,2 +1,2 @@
 # LinKitExtensions
-This repositories completes the repository RelayEnv (https://github.com/Override-6/RelayEnv) by defining optionals extensions
+This repositories completes the repository [Linkit](https://github.com/Override-6/LinKit) (https://github.com/Override-6/LinKit) by defining optionals extensions
