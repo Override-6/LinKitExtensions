@@ -1,10 +1,10 @@
 package fr.`override`.linkit.extension.easysharing.screen
 
-import fr.`override`.linkit.`extension`.easysharing.screen.RemoteScreen.StreamPacket
-import fr.`override`.linkit.api.`extension`.fragment.RemoteFragment
+import fr.`override`.linkit.api.extension.fragment.RemoteFragment
 import fr.`override`.linkit.api.network.Network
 import fr.`override`.linkit.api.network.cache.collection.SharedCollection
 import fr.`override`.linkit.api.packet.{DedicatedPacketCoordinates, Packet}
+import fr.`override`.linkit.extension.easysharing.screen.RemoteScreen.StreamPacket
 
 import scala.collection.mutable
 

@@ -1,11 +1,11 @@
-package fr.`override`.linkit.`extension`.easysharing
+package fr.`override`.linkit.extension.easysharing
 
-import fr.`override`.linkit.`extension`.controller.ControllerExtension
-import fr.`override`.linkit.`extension`.controller.cli.CommandManager
-import fr.`override`.linkit.`extension`.easysharing.clipboard.{RemoteClipboard, RemotePasteCommand}
-import fr.`override`.linkit.`extension`.easysharing.screen.{RemoteScreen, RemoteScreenCommand}
 import fr.`override`.linkit.api.Relay
-import fr.`override`.linkit.api.`extension`.RelayExtension
+import fr.`override`.linkit.api.extension.RelayExtension
+import fr.`override`.linkit.extension.controller.ControllerExtension
+import fr.`override`.linkit.extension.controller.cli.CommandManager
+import fr.`override`.linkit.extension.easysharing.clipboard.{RemoteClipboard, RemotePasteCommand}
+import fr.`override`.linkit.extension.easysharing.screen.{RemoteScreen, RemoteScreenCommand}
 
 class EasySharing(relay: Relay) extends RelayExtension(relay) {
 

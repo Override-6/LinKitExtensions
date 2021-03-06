@@ -1,8 +1,8 @@
-package fr.`override`.linkit.`extension`.debug.tests
+package fr.`override`.linkit.extension.debug.tests
 
-import fr.`override`.linkit.`extension`.controller.cli.CommandExecutor
 import fr.`override`.linkit.api.Relay
 import fr.`override`.linkit.api.packet.fundamental.EmptyPacket
+import fr.`override`.linkit.extension.controller.cli.CommandExecutor
 
 class TestCommand(relay: Relay) extends CommandExecutor {
 

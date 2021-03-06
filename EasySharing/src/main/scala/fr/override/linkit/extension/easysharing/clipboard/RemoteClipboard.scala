@@ -1,6 +1,6 @@
 package fr.`override`.linkit.extension.easysharing.clipboard
 
-import fr.`override`.linkit.api.`extension`.fragment.RemoteFragment
+import fr.`override`.linkit.api.extension.fragment.RemoteFragment
 import fr.`override`.linkit.api.packet.fundamental.RefPacket.{ArrayRefPacket, ObjectPacket}
 import fr.`override`.linkit.api.packet.fundamental.WrappedPacket
 import fr.`override`.linkit.api.packet.{DedicatedPacketCoordinates, Packet}

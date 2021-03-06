@@ -1,9 +1,9 @@
-package fr.`override`.linkit.`extension`.debug.commands
+package fr.`override`.linkit.extension.debug.commands
+
+import fr.`override`.linkit.api.network.{Network, NetworkEntity}
+import fr.`override`.linkit.extension.controller.cli.CommandExecutor
 
 import java.time.{Duration, LocalDateTime}
-
-import fr.`override`.linkit.`extension`.controller.cli.CommandExecutor
-import fr.`override`.linkit.api.network.{Network, NetworkEntity}
 
 class NetworkCommand(network: Network) extends CommandExecutor {
 

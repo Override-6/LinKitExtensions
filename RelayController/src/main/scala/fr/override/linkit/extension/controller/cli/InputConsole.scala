@@ -1,7 +1,6 @@
-package fr.`override`.linkit.`extension`.controller.cli
+package fr.`override`.linkit.extension.controller.cli
 
 import java.util.concurrent.PriorityBlockingQueue
-
 import scala.io.StdIn
 
 object InputConsole {

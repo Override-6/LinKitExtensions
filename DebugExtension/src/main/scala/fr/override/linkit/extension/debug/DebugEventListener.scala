@@ -1,4 +1,4 @@
-package fr.`override`.linkit.`extension`.debug
+package fr.`override`.linkit.extension.debug
 
 import fr.`override`.linkit.api.packet.{Packet, PacketCoordinates}
 

@@ -1,7 +1,7 @@
 package fr.`override`.linkit.extension.easysharing.clipboard
 
 import fr.`override`.linkit.api.network.{AbstractRemoteFragmentController, RemoteFragmentController}
-import fr.`override`.linkit.api.packet.fundamental.RefPacket.{ArrayRefPacket, ObjectPacket, StringPacket}
+import fr.`override`.linkit.api.packet.fundamental.RefPacket.{ArrayObjectPacket, ArrayRefPacket, ObjectPacket, StringPacket}
 import fr.`override`.linkit.api.packet.fundamental.WrappedPacket
 import fr.`override`.linkit.api.packet.{Packet, PacketCoordinates}
 
@@ -86,7 +86,7 @@ class RemoteClipboardController(controller: RemoteFragmentController)
 
     def getFiles: Array[String] = {
         controller.sendRequest(StringPacket("get/paths"))
-        controller.nextResponse[ArrayRefPacket].casted
+        controller.nextResponse[ArrayObjectPacket].casted
     }
 
     private def isSuccessFull(action: => Unit): Boolean = {

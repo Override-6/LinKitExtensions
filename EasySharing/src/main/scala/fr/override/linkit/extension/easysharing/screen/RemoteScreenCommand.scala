@@ -1,6 +1,6 @@
-package fr.`override`.linkit.`extension`.easysharing.screen
+package fr.`override`.linkit.extension.easysharing.screen
 
-import fr.`override`.linkit.`extension`.controller.cli.{CommandException, CommandExecutor}
+import fr.`override`.linkit.extension.controller.cli.{CommandException, CommandExecutor}
 
 class RemoteScreenCommand(remoteScreen: RemoteScreen) extends CommandExecutor {
 

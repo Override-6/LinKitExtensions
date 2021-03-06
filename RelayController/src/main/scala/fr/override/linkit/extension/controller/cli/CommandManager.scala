@@ -1,7 +1,7 @@
-package fr.`override`.linkit.`extension`.controller.cli
+package fr.`override`.linkit.extension.controller.cli
 
-import fr.`override`.linkit.api.`extension`.fragment.ExtensionFragment
 import fr.`override`.linkit.api.exception.RelayException
+import fr.`override`.linkit.api.extension.fragment.ExtensionFragment
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer

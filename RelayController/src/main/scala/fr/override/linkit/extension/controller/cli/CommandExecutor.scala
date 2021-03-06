@@ -1,4 +1,4 @@
-package fr.`override`.linkit.`extension`.controller.cli
+package fr.`override`.linkit.extension.controller.cli
 
 trait CommandExecutor {
 

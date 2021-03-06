@@ -1,9 +1,9 @@
-package fr.`override`.linkit.`extension`.controller
+package fr.`override`.linkit.extension.controller
 
-import fr.`override`.linkit.`extension`.controller.cli.CommandManager
-import fr.`override`.linkit.`extension`.controller.cli.commands.ShutdownCommand
 import fr.`override`.linkit.api.Relay
-import fr.`override`.linkit.api.`extension`.RelayExtension
+import fr.`override`.linkit.api.extension.RelayExtension
+import fr.`override`.linkit.extension.controller.cli.CommandManager
+import fr.`override`.linkit.extension.controller.cli.commands.ShutdownCommand
 
 
 class ControllerExtension(relay: Relay) extends RelayExtension(relay) {

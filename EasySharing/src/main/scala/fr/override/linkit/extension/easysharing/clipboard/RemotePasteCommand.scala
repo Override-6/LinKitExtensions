@@ -1,7 +1,8 @@
-package fr.`override`.linkit.`extension`.easysharing.clipboard
+package fr.`override`.linkit.extension.easysharing.clipboard
 
-import fr.`override`.linkit.`extension`.controller.cli.{CommandException, CommandExecutor}
 import fr.`override`.linkit.api.Relay
+import fr.`override`.linkit.extension.controller.cli.{CommandException, CommandExecutor}
+
 import javax.imageio.ImageIO
 
 class RemotePasteCommand(relay: Relay) extends CommandExecutor {
