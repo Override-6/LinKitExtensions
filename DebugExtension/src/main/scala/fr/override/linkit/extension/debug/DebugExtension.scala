@@ -1,6 +1,7 @@
 package fr.`override`.linkit.extension.debug
 
 import fr.`override`.linkit.api.Relay
+import fr.`override`.linkit.api.Relay.Log
 import fr.`override`.linkit.api.extension.RelayExtension
 import fr.`override`.linkit.extension.controller.ControllerExtension
 import fr.`override`.linkit.extension.controller.cli.CommandManager
@@ -26,9 +27,10 @@ class DebugExtension(relay: Relay) extends RelayExtension(relay) {
         commandManager.register("test", new TestCommand(relay))
         commandManager.register("network", new NetworkCommand(relay.network))
 
-        val network = relay.network
-        network.listEntities.foreach(_.addOnStateUpdate(println))
-        network.addOnEntityAdded(_.addOnStateUpdate(println))
+        val networkHooks = relay.networkHooks
+
+        networkHooks.entityStateChange.add(e => Log.info(s"${e.entity.identifier} got ${e.newState.name().toLowerCase}"))
+        networkHooks.entityAdded.add(e => Log.info(s"New entity added : ${e.entity}"))
 
         Relay.Log.trace("Debug extension enabled")
     }
