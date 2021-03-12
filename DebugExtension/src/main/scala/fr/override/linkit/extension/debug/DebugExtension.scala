@@ -29,5 +29,7 @@ class DebugExtension(relay: Relay) extends RelayExtension(relay) {
         val network = relay.network
         network.listEntities.foreach(_.addOnStateUpdate(println))
         network.addOnEntityAdded(_.addOnStateUpdate(println))
+
+        Relay.Log.trace("Debug extension enabled")
     }
 }
