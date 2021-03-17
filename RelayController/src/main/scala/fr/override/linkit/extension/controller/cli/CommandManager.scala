@@ -1,13 +1,13 @@
 package fr.`override`.linkit.extension.controller.cli
 
-import fr.`override`.linkit.api.exception.RelayException
-import fr.`override`.linkit.api.extension.fragment.ExtensionFragment
+import fr.`override`.linkit.skull.internal.plugin.fragment.PluginFragment
+import fr.`override`.linkit.skull.internal.system.RelayException
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 import scala.util.control.NonFatal
 
-class CommandManager extends ExtensionFragment {
+class CommandManager extends PluginFragment {
 
     private val commands: mutable.Map[String, CommandExecutor] = mutable.Map.empty
     @volatile private var alive = true

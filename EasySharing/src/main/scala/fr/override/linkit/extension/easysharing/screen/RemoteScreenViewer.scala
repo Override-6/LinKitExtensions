@@ -1,6 +1,6 @@
 package fr.`override`.linkit.extension.easysharing.screen
 
-import fr.`override`.linkit.api.packet.serialization.NumberSerializer.convertByteArray
+import .convertByteArray
 import javafx.scene.canvas.Canvas
 import javafx.scene.image.Image
 

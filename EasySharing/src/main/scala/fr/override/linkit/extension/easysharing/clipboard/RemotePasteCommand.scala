@@ -1,6 +1,6 @@
 package fr.`override`.linkit.extension.easysharing.clipboard
 
-import fr.`override`.linkit.api.Relay
+import fr.`override`.linkit.skull.Relay
 import fr.`override`.linkit.extension.controller.cli.{CommandException, CommandExecutor}
 
 import javax.imageio.ImageIO

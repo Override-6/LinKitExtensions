@@ -1,9 +1,9 @@
 package fr.`override`.linkit.extension.easysharing.clipboard
 
-import fr.`override`.linkit.api.extension.fragment.RemoteFragment
-import fr.`override`.linkit.api.packet.fundamental.RefPacket.{ArrayRefPacket, ObjectPacket}
-import fr.`override`.linkit.api.packet.fundamental.WrappedPacket
-import fr.`override`.linkit.api.packet.{DedicatedPacketCoordinates, Packet}
+import fr.`override`.linkit.skull.internal.plugin.fragment.RemoteFragment
+import fr.`override`.linkit.skull.connection.packet.fundamental.RefPacket.{ArrayRefPacket, ObjectPacket}
+import fr.`override`.linkit.skull.connection.packet.fundamental.WrappedPacket
+import fr.`override`.linkit.skull.connection.packet.Packet
 
 import java.awt.datatransfer._
 import java.awt.image.BufferedImage

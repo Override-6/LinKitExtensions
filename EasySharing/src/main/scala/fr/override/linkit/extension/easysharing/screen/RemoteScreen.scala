@@ -1,9 +1,9 @@
 package fr.`override`.linkit.extension.easysharing.screen
 
-import fr.`override`.linkit.api.extension.fragment.RemoteFragment
-import fr.`override`.linkit.api.network.Network
-import fr.`override`.linkit.api.network.cache.collection.SharedCollection
-import fr.`override`.linkit.api.packet.{DedicatedPacketCoordinates, Packet}
+import fr.`override`.linkit.skull.internal.plugin.fragment.RemoteFragment
+import fr.`override`.linkit.skull.connection.network.Network
+import fr.`override`.linkit.skull.connection.network.cache.collection.SharedCollection
+import fr.`override`.linkit.skull.connection.packet.Packet
 import fr.`override`.linkit.extension.easysharing.screen.RemoteScreen.StreamPacket
 
 import scala.collection.mutable

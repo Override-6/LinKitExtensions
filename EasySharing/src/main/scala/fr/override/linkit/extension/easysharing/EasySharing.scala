@@ -1,13 +1,13 @@
 package fr.`override`.linkit.extension.easysharing
 
-import fr.`override`.linkit.api.Relay
-import fr.`override`.linkit.api.extension.RelayExtension
+import fr.`override`.linkit.skull.Relay
+import fr.`override`.linkit.skull.internal.plugin.Plugin
 import fr.`override`.linkit.extension.controller.ControllerExtension
 import fr.`override`.linkit.extension.controller.cli.CommandManager
 import fr.`override`.linkit.extension.easysharing.clipboard.{RemoteClipboard, RemotePasteCommand}
 import fr.`override`.linkit.extension.easysharing.screen.{RemoteScreen, RemoteScreenCommand}
 
-class EasySharing(relay: Relay) extends RelayExtension(relay) {
+class EasySharing(relay: Relay) extends Plugin(relay) {
 
     private val remoteClipboard = new RemoteClipboard()
     private val remoteScreen = new RemoteScreen(relay.network)

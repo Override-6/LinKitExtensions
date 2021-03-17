@@ -1,15 +1,15 @@
 package fr.`override`.linkit.extension.debug
 
-import fr.`override`.linkit.api.Relay
-import fr.`override`.linkit.api.Relay.Log
-import fr.`override`.linkit.api.extension.RelayExtension
+import fr.`override`.linkit.skull.Relay
+import fr.`override`.linkit.skull.Relay.Log
+import fr.`override`.linkit.skull.internal.plugin.Plugin
 import fr.`override`.linkit.extension.controller.ControllerExtension
 import fr.`override`.linkit.extension.controller.cli.CommandManager
 import fr.`override`.linkit.extension.debug._
 import fr.`override`.linkit.extension.debug.commands.{NetworkCommand, PingCommand, SendMessageCommand}
 import fr.`override`.linkit.extension.debug.tests.{TestCommand, TestRemoteFragment}
 
-class DebugExtension(relay: Relay) extends RelayExtension(relay) {
+class DebugExtension(relay: Relay) extends Plugin(relay) {
 
     override def onLoad(): Unit = {
         putFragment(new TestRemoteFragment(relay))

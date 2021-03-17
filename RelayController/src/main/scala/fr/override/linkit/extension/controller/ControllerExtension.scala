@@ -1,12 +1,12 @@
 package fr.`override`.linkit.extension.controller
 
-import fr.`override`.linkit.api.Relay
-import fr.`override`.linkit.api.extension.RelayExtension
+import fr.`override`.linkit.skull.Relay
+import fr.`override`.linkit.skull.internal.plugin.Plugin
 import fr.`override`.linkit.extension.controller.cli.CommandManager
 import fr.`override`.linkit.extension.controller.cli.commands.ShutdownCommand
 
 
-class ControllerExtension(relay: Relay) extends RelayExtension(relay) {
+class ControllerExtension(relay: Relay) extends Plugin(relay) {
 
     private val commandManager = new CommandManager()
 
