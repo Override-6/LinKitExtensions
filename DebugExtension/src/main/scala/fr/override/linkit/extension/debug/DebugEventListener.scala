@@ -1,6 +1,6 @@
 package fr.`override`.linkit.extension.debug
 
-import fr.`override`.linkit.skull.connection.packet.{Packet, PacketCoordinates}
+import fr.`override`.linkit.api.connection.packet.{Packet, PacketCoordinates}
 
 class DebugEventListener  {
 

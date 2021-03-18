@@ -1,9 +1,9 @@
 package fr.`override`.linkit.extension.debug.tests
 
-import fr.`override`.linkit.skull.Relay
-import fr.`override`.linkit.skull.internal.plugin.fragment.RemoteFragment
-import fr.`override`.linkit.skull.connection.packet.fundamental.RefPacket.ObjectPacket
-import fr.`override`.linkit.skull.connection.packet.Packet
+import fr.`override`.linkit.api.Relay
+import fr.`override`.linkit.api.local.plugin.fragment.RemoteFragment
+import fr.`override`.linkit.api.connection.packet.fundamental.RefPacket.ObjectPacket
+import fr.`override`.linkit.api.connection.packet.Packet
 
 class TestRemoteFragment(relay: Relay) extends RemoteFragment() {
     override val nameIdentifier: String = "Test Remote Fragment " + relay.identifier

@@ -1,7 +1,7 @@
 package fr.`override`.linkit.extension.easysharing
 
-import fr.`override`.linkit.skull.Relay
-import fr.`override`.linkit.skull.internal.plugin.Plugin
+import fr.`override`.linkit.api.Relay
+import fr.`override`.linkit.api.local.plugin.Plugin
 import fr.`override`.linkit.extension.controller.ControllerExtension
 import fr.`override`.linkit.extension.controller.cli.CommandManager
 import fr.`override`.linkit.extension.easysharing.clipboard.{RemoteClipboard, RemotePasteCommand}

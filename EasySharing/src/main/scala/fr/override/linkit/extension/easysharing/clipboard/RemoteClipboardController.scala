@@ -1,8 +1,8 @@
 package fr.`override`.linkit.extension.easysharing.clipboard
 
-import fr.`override`.linkit.skull.connection.packet.fundamental.RefPacket.{ArrayObjectPacket, ArrayRefPacket, ObjectPacket, StringPacket}
-import fr.`override`.linkit.skull.connection.packet.fundamental.WrappedPacket
-import fr.`override`.linkit.skull.connection.packet.{Packet, PacketCoordinates}
+import fr.`override`.linkit.api.connection.packet.fundamental.RefPacket.{ArrayObjectPacket, ArrayRefPacket, ObjectPacket, StringPacket}
+import fr.`override`.linkit.api.connection.packet.fundamental.WrappedPacket
+import fr.`override`.linkit.api.connection.packet.{Packet, PacketCoordinates}
 
 import java.awt.datatransfer.{DataFlavor, UnsupportedFlavorException}
 import java.awt.image.BufferedImage

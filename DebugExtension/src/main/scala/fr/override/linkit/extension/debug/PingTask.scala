@@ -1,8 +1,8 @@
 package fr.`override`.linkit.extension.debug
 
-import fr.`override`.linkit.skull.connection.packet.Packet
-import fr.`override`.linkit.skull.connection.packet.fundamental.EmptyPacket
-import fr.`override`.linkit.skull.connection.task.{Task, TaskExecutor, TaskInitInfo}
+import fr.`override`.linkit.api.connection.packet.Packet
+import fr.`override`.linkit.api.connection.packet.fundamental.EmptyPacket
+import fr.`override`.linkit.api.connection.task.{Task, TaskExecutor, TaskInitInfo}
 import fr.`override`.linkit.extension.debug.PingTask.Type
 
 class PingTask(private val targetId: String) extends Task[Long](targetId) {

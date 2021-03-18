@@ -1,7 +1,7 @@
 package fr.`override`.linkit.extension.controller.cli.commands
 
-import fr.`override`.linkit.skull.Relay
-import fr.`override`.linkit.skull.internal.system.CloseReason
+import fr.`override`.linkit.api.Relay
+import fr.`override`.linkit.api.local.system.CloseReason
 import fr.`override`.linkit.extension.controller.cli.CommandExecutor
 
 class ShutdownCommand(relay: Relay) extends CommandExecutor {

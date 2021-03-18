@@ -1,6 +1,6 @@
 package fr.`override`.linkit.extension.debug.commands
 
-import fr.`override`.linkit.skull.connection.network.{Network, NetworkEntity}
+import fr.`override`.linkit.api.connection.network.{Network, NetworkEntity}
 import fr.`override`.linkit.extension.controller.cli.CommandExecutor
 
 import java.time.{Duration, LocalDateTime}

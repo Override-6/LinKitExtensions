@@ -1,8 +1,8 @@
 package fr.`override`.linkit.extension.debug
 
-import fr.`override`.linkit.skull.Relay
-import fr.`override`.linkit.skull.Relay.Log
-import fr.`override`.linkit.skull.internal.plugin.Plugin
+import fr.`override`.linkit.api.Relay
+import fr.`override`.linkit.api.ContextLogger
+import fr.`override`.linkit.api.local.plugin.Plugin
 import fr.`override`.linkit.extension.controller.ControllerExtension
 import fr.`override`.linkit.extension.controller.cli.CommandManager
 import fr.`override`.linkit.extension.debug._
@@ -32,6 +32,6 @@ class DebugExtension(relay: Relay) extends Plugin(relay) {
         networkHooks.entityStateChange.add(e => Log.info(s"${e.entity.identifier} got ${e.newState.name().toLowerCase}"))
         networkHooks.entityAdded.add(e => Log.info(s"New entity added : ${e.entity}"))
 
-        Relay.Log.trace("Debug extension enabled")
+        ContextLogger.trace("Debug extension enabled")
     }
 }
