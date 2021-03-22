@@ -1,12 +1,13 @@
 package fr.`override`.linkit.extension.debug.tests
 
-import fr.`override`.linkit.api.Relay
-import fr.`override`.linkit.api.local.plugin.fragment.RemoteFragment
-import fr.`override`.linkit.api.connection.packet.fundamental.RefPacket.ObjectPacket
-import fr.`override`.linkit.api.connection.packet.Packet
+import java.util.concurrent.ThreadLocalRandom
 
-class TestRemoteFragment(relay: Relay) extends RemoteFragment() {
-    override val nameIdentifier: String = "Test Remote Fragment " + relay.identifier
+import fr.`override`.linkit.api.connection.packet.{DedicatedPacketCoordinates, Packet}
+import fr.`override`.linkit.api.local.plugin.fragment.RemoteFragment
+import fr.`override`.linkit.core.connection.packet.fundamental.RefPacket.ObjectPacket
+
+/*class TestRemoteFragment extends RemoteFragment {
+    override val nameIdentifier: String = "Test Remote Fragment " + ThreadLocalRandom.current().nextInt()
 
     override def handleRequest(packet: Packet, coords: DedicatedPacketCoordinates): Unit = {
         packetSender().sendTo(ObjectPacket("I Received your request !"), coords.senderID)
@@ -17,4 +18,4 @@ class TestRemoteFragment(relay: Relay) extends RemoteFragment() {
 
     override def destroy(): Unit = {
     }
-}
+ */

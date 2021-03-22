@@ -1,6 +1,5 @@
 package fr.`override`.linkit.extension.debug.commands
 
-import fr.`override`.linkit.api.Relay
 import fr.`override`.linkit.extension.controller.cli.{CommandException, CommandExecutor}
 import fr.`override`.linkit.extension.debug.PingTask
 

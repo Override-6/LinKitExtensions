@@ -1,7 +1,7 @@
 package fr.`override`.linkit.extension.controller.cli
 
 import fr.`override`.linkit.api.local.plugin.fragment.PluginFragment
-import fr.`override`.linkit.api.local.system.RelayException
+import fr.`override`.linkit.api.local.system.AppException
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
@@ -38,7 +38,7 @@ class CommandManager extends PluginFragment {
         try {
             commands(cmd).execute(args)
         } catch {
-            case e@(_: CommandException | _: RelayException) => Console.err.println(e.getMessage)
+            case e@(_: CommandException | _: AppException) => Console.err.println(e.getMessage)
             case NonFatal(e) => e.printStackTrace()
         }
     }

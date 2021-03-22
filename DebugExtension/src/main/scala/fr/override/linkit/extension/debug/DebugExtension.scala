@@ -1,25 +1,18 @@
 package fr.`override`.linkit.extension.debug
 
-import fr.`override`.linkit.api.Relay
-import fr.`override`.linkit.api.ContextLogger
-import fr.`override`.linkit.api.local.plugin.Plugin
+import fr.`override`.linkit.api.local.plugin.LinkitPlugin
 import fr.`override`.linkit.extension.controller.ControllerExtension
 import fr.`override`.linkit.extension.controller.cli.CommandManager
-import fr.`override`.linkit.extension.debug._
 import fr.`override`.linkit.extension.debug.commands.{NetworkCommand, PingCommand, SendMessageCommand}
-import fr.`override`.linkit.extension.debug.tests.{TestCommand, TestRemoteFragment}
+import fr.`override`.linkit.extension.debug.tests.TestCommand
 
-class DebugExtension(relay: Relay) extends Plugin(relay) {
+class DebugExtension extends LinkitPlugin {
 
     override def onLoad(): Unit = {
-        putFragment(new TestRemoteFragment(relay))
+        //putFragment(new TestRemoteFragment(relay))
     }
 
     override def onEnable(): Unit = {
-        val completerHandler = relay.taskCompleterHandler
-
-        completerHandler.register(PingTask.Type, (_, _) => PingTask.Completer())
-
         val commandManager = getFragmentOrAbort(classOf[ControllerExtension], classOf[CommandManager])
 
         commandManager.register("ping", new PingCommand(relay))
