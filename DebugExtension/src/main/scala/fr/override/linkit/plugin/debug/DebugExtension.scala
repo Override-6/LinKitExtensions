@@ -15,7 +15,7 @@ class DebugExtension extends LinkitPlugin {
     override def onEnable(): Unit = {
         val commandManager = getFragmentOrAbort(classOf[ControllerExtension], classOf[CommandManager])
 
-        commandManager.register("network", new NetworkCommand(getContext.getConnections.map(_.network)))
+        commandManager.register("network", new NetworkCommand(getContext.listConnections.map(_.network)))
 
         ContextLogger.trace("Debug extension enabled.")
     }
