@@ -14,6 +14,7 @@ class ControllerExtension extends LinkitPlugin {
 
     override def onEnable(): Unit = {
         commandManager.register("stop", new ShutdownCommand(getContext))
+        commandManager.start()
     }
 
 }
