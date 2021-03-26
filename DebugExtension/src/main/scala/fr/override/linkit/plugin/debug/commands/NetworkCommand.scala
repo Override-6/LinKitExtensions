@@ -8,6 +8,7 @@ import java.time.{Duration, LocalDateTime}
 class NetworkCommand(networks: Iterable[Network]) extends CommandExecutor {
 
     override def execute(implicit args: Array[String]): Unit = {
+        println("EXECUTING")
         networks.foreach(genDescription)
     }
 
