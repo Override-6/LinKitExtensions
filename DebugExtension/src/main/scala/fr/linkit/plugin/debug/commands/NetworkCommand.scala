@@ -1,14 +1,25 @@
-package fr.`override`.linkit.plugin.debug.commands
+/*
+ * Copyright (c) 2021. Linkit and or its affiliates. All rights reserved.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ *
+ * This code is free software; you can only use it for personal uses, studies or documentation.
+ * You can download this source code, and modify it ONLY FOR PERSONAL USE and you
+ * ARE NOT ALLOWED to distribute your MODIFIED VERSION.
+ *
+ * Please contact maximebatista18@gmail.com if you need additional information or have any
+ * questions.
+ */
 
-import fr.`override`.linkit.api.connection.network.{Network, NetworkEntity}
-import fr.`override`.linkit.plugin.controller.cli.CommandExecutor
+package fr.linkit.plugin.debug.commands
+
+import fr.linkit.api.connection.network.{Network, NetworkEntity}
+import fr.linkit.plugin.controller.cli.CommandExecutor
 
 import java.time.{Duration, LocalDateTime}
 
-class NetworkCommand(networks: Iterable[Network]) extends CommandExecutor {
+class NetworkCommand(networks: => Iterable[Network]) extends CommandExecutor {
 
     override def execute(implicit args: Array[String]): Unit = {
-        println("EXECUTING")
         networks.foreach(genDescription)
     }
 
@@ -21,11 +32,11 @@ class NetworkCommand(networks: Iterable[Network]) extends CommandExecutor {
         //val selfRemoteFragments = self.listRemoteFragmentControllers.map(_.nameIdentifier).mkString(", ")
         val duration = getDurationAsString(upDate)
 
-        println()
+        println(s"${network.serverIdentifier}:")
         println(s"There are $count relays connected on the network.")
         println(s"Started at $upDate (Since: $duration)")
         //println(s"Self entity : $self, enabled Remote Fragments : $selfRemoteFragments")
-        println(s"    Status : ${self.getConnectionState}")
+        println(s"\tStatus : ${self.getConnectionState}")
         println(s"All currently connected entities : $entitiesNames")
         println("--------------------------------------------------")
         println("For all entities : ")
@@ -42,8 +53,8 @@ class NetworkCommand(networks: Iterable[Network]) extends CommandExecutor {
 
         println(s"-$name : ")
         //println(s"    Enabled Remote Fragments : $remoteFragments")
-        println(s"    Status : ${entity.getConnectionState}")
-        println(s"    Connected at : $connectionDate (Since: $connectionDuration)")
+        println(s"\tStatus : ${entity.getConnectionState}")
+        println(s"\tConnected at : $connectionDate (Since: $connectionDuration)")
         //println(s"    $apiVersion")
         //println(s"    $implVersion")
     }
