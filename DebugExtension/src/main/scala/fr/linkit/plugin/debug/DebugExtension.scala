@@ -13,7 +13,7 @@
 package fr.linkit.plugin.debug
 
 import fr.linkit.api.local.plugin.LinkitPlugin
-import fr.linkit.core.local.system.ContextLogger
+import fr.linkit.core.local.system.AppLogger
 import fr.linkit.plugin.controller.ControllerExtension
 import fr.linkit.plugin.controller.cli.CommandManager
 import fr.linkit.plugin.debug.commands.NetworkCommand
@@ -29,6 +29,6 @@ class DebugExtension extends LinkitPlugin {
 
         commandManager.register("network", new NetworkCommand(getContext.listConnections.map(_.network)))
 
-        ContextLogger.trace("Debug extension enabled.")
+        AppLogger.trace("Debug extension enabled.")
     }
 }

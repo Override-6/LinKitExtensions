@@ -20,11 +20,14 @@ import java.time.{Duration, LocalDateTime}
 class NetworkCommand(networks: => Iterable[Network]) extends CommandExecutor {
 
     override def execute(implicit args: Array[String]): Unit = {
+        println(s"networks = ${networks}")
         networks.foreach(genDescription)
     }
 
     private def genDescription(network: Network): Unit = {
+        println(s"Running network later: $network")
         network.connection.runLater {
+            println("Running description generation :D")
             val entities      = network.listEntities
             val entitiesNames = entities.map(_.identifier).mkString(", ")
             val count         = entities.size
