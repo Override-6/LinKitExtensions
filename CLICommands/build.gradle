@@ -3,16 +3,18 @@ plugins {
     id 'scala'
 }
 
-group 'fr.linkit'
+group 'org.example'
 
 repositories {
     mavenCentral()
 }
+
+
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     implementation group: 'org.scala-lang', name: 'scala-library', version: '2.13.5'
     implementation project(':API')
     implementation project(':AbstractCore')
-    implementation project(':LinkitPlugins:CLICommands')
+
 }
