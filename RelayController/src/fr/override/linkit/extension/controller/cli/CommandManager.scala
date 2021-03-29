@@ -39,7 +39,7 @@ class CommandManager extends ExtensionFragment {
             commands(cmd).execute(args)
         } catch {
             case e@(_: CommandException | _: RelayException) => Console.err.println(e.getMessage)
-            case NonFatal(e) => e.printStackTrace()
+            case NonFatal(e) => AppLogger.exception(e)
         }
     }
 
