@@ -13,7 +13,7 @@
 package fr.linkit.plugin.debug
 
 import fr.linkit.api.local.plugin.LinkitPlugin
-import fr.linkit.core.local.system.AppLogger
+import fr.linkit.api.local.system.AppLogger
 import fr.linkit.plugin.controller.ControllerExtension
 import fr.linkit.plugin.controller.cli.CommandManager
 import fr.linkit.plugin.debug.commands.NetworkCommand
