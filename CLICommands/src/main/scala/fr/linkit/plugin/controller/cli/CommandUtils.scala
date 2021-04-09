@@ -14,6 +14,7 @@ package fr.linkit.plugin.controller.cli
 
 object CommandUtils {
 
+    @throws[CommandException]("if expecteds not found.")
     def checkArgsContains(expected: String*)(implicit args: Array[String]): Unit = {
         val success = expected.forall(args.contains)
         if (success)
@@ -22,8 +23,16 @@ object CommandUtils {
         throw CommandException(errorMsg)
     }
 
-
     def argAfter(ref: String)(implicit args: Array[String]): String =
         args(args.indexOf(ref) + 1)
+
+    def getValue(name: String, default: String = "", args: Array[String]): String = {
+        args.foreach(arg => {
+            val pair = arg.split('=')
+            if (pair(0) == name && pair.length == 2)
+                return pair(1)
+        })
+        default
+    }
 
 }

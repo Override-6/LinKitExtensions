@@ -37,7 +37,7 @@ class NetworkCommand(networks: => Iterable[Network]) extends CommandExecutor {
             val duration      = getDurationAsString(upDate)
 
             println(s"${network.serverIdentifier}:")
-            println(s"There are $count relays connected on the network.")
+            println(s"There are $count connections over this network.")
             println(s"Started at $upDate (Since: $duration)")
             //println(s"Self entity : $self, enabled Remote Fragments : $selfRemoteFragments")
             println(s"\tStatus : ${self.getConnectionState}")
