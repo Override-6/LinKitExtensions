@@ -12,41 +12,65 @@
 
 package fr.linkit.plugin.debug.commands
 
+import fr.linkit.api.connection.network.cache.SharedCacheManager
 import fr.linkit.core.connection.network.cache.`object`.{Cached, Shared, SharedObject, SharedObjectsCache}
+import fr.linkit.core.connection.network.cache.map.SharedMap
 import fr.linkit.plugin.controller.cli.{CommandException, CommandExecutor, CommandUtils}
 import fr.linkit.plugin.debug.commands.PuppetCommand.Player
 
-import scala.collection.mutable
+class PuppetCommand(cacheHandler: SharedCacheManager) extends CommandExecutor {
 
-class PuppetCommand(repo: SharedObjectsCache) extends CommandExecutor {
+    private val repo    = cacheHandler.getCache(50, SharedObjectsCache)
+    private val players = cacheHandler.getCache(51, SharedMap[Int, Player])
+            .link(pair => addPlayer(pair._2))
 
-    private val players = new mutable.HashMap[Int, Player]()
+    private def addPlayer(player: Player): Unit = {
+        val id = player.id
+        if (!players.contains(id))
+            players.put(id, player)
+        repo.chipObject(id, player)
+    }
 
     override def execute(implicit args: Array[String]): Unit = {
-        val order = args(0)
+        val order = if (args.length == 0) "" else args(0)
         order match {
             case "create" => createPlayer(args.drop(1)) //remove first arg which is obviously 'create'
             case "update" => updatePlayer(args.drop(1))
+            case "list"   => println(s"players: $players")
+            case _        => throw CommandException("usage: player [create|update] [...]")
         }
     }
 
     private def createPlayer(args: Array[String]): Unit = {
-        if (args.length != 4)
-            throw CommandException("usage: player create [id=?|name=?|x=?|y=?]")
+        implicit val usage: String = "usage: player create [id=?|name=?|x=?|y=?]"
 
-        val name   = CommandUtils.getValue("name", "James", args)
-        val id     = CommandUtils.getValue("id", "-1", args).toInt
-        val x      = CommandUtils.getValue("x", "50", args).toInt
-        val y      = CommandUtils.getValue("y", "20", args).toInt
-        val player = repo.chipObject(id, Player(name, x, y))
+        val id     = CommandUtils.getValue("id", args).toInt
+        val name   = CommandUtils.getValue("name", args)
+        val x      = CommandUtils.getValue("x", args).toInt
+        val y      = CommandUtils.getValue("y", args).toInt
+        val player = repo.chipObject(id, Player(id, name, x, y))
+
         println(s"Created $player ! (identifier = $id)")
         players.put(id, player)
     }
 
     private def updatePlayer(args: Array[String]): Unit = {
-        if (args.length > 4 || args.length == 0)
-            throw CommandException("usage: player update [id=?] <|name=?|x=?|y=?>")
+        implicit val usage: String = "usage: player update [id=?] <name=?|x=?|y=?>"
+        val id     = CommandUtils.getValue("id", args).toInt
+        val player = players.getOrElse(id, throw CommandException("Player does not exists"))
 
+        val name = CommandUtils.getValue("name", player.getName, args)
+        val x    = CommandUtils.getValue("x", player.x.toString, args).toInt
+        val y    = CommandUtils.getValue("y", player.y.toString, args).toInt
+
+        println(s"Updating player $player...")
+        player.setX(x)
+        player.setY(y)
+        player.name = name
+        println(s"Player is now $player, updating chip...")
+        val chip = repo.getChip[Player](id).get
+        chip.updatePuppet(player)
+        println(s"Chip updated !")
     }
 
 }
@@ -54,7 +78,7 @@ class PuppetCommand(repo: SharedObjectsCache) extends CommandExecutor {
 object PuppetCommand {
 
     @SharedObject(autoFlush = true)
-    case class Player(@Cached name: String, var x: Int, var y: Int) extends Serializable {
+    case class Player(id: Int, @Cached var name: String, var x: Int, var y: Int) extends Serializable {
 
         @Cached
         def getName: String = name

@@ -14,9 +14,11 @@ package fr.linkit.plugin.debug
 
 import fr.linkit.api.local.plugin.LinkitPlugin
 import fr.linkit.api.local.system.AppLogger
+import fr.linkit.core.connection.network.cache.`object`.SharedObjectsCache
+import fr.linkit.core.local.concurrency.pool.BusyWorkerPool
 import fr.linkit.plugin.controller.ControllerExtension
 import fr.linkit.plugin.controller.cli.CommandManager
-import fr.linkit.plugin.debug.commands.NetworkCommand
+import fr.linkit.plugin.debug.commands.{NetworkCommand, PuppetCommand}
 
 class DebugExtension extends LinkitPlugin {
 
@@ -28,7 +30,13 @@ class DebugExtension extends LinkitPlugin {
         val commandManager = getFragmentOrAbort(classOf[ControllerExtension], classOf[CommandManager])
 
         commandManager.register("network", new NetworkCommand(getContext.listConnections.map(_.network)))
-        commandManager.register("network", new NetworkCommand(getContext.listConnections.map(_.network)))
+
+        val pool = BusyWorkerPool.currentPool.get
+        pool.waitCurrentTaskForAtLeast(5000)
+
+        val testServerConnection = getContext.getConnection("TestServer1").get
+        val globalCache = testServerConnection.network.globalCache
+        commandManager.register("player", new PuppetCommand(globalCache))
 
         AppLogger.trace("Debug extension enabled.")
     }

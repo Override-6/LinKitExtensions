@@ -18,9 +18,10 @@ import fr.linkit.plugin.controller.cli.commands.ShutdownCommand
 
 class ControllerExtension extends LinkitPlugin {
 
-    private val commandManager = new CommandManager()
+    private var commandManager: CommandManager = _
 
     override def onLoad(): Unit = {
+        commandManager = new CommandManager(getContext)
         putFragment(commandManager)
     }
 

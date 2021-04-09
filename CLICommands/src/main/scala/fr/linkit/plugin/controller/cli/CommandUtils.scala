@@ -26,13 +26,22 @@ object CommandUtils {
     def argAfter(ref: String)(implicit args: Array[String]): String =
         args(args.indexOf(ref) + 1)
 
-    def getValue(name: String, default: String = "", args: Array[String]): String = {
+    def getValue(name: String, default: String, args: Array[String]): String = {
         args.foreach(arg => {
             val pair = arg.split('=')
             if (pair(0) == name && pair.length == 2)
                 return pair(1)
         })
         default
+    }
+
+    def getValue(name: String, args: Array[String])(implicit usage: String): String = {
+        args.foreach(arg => {
+            val pair = arg.split('=')
+            if (pair(0) == name && pair.length == 2)
+                return pair(1)
+        })
+        throw CommandException(s"Missing argument '$name=?', " + usage)
     }
 
 }

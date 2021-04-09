@@ -12,6 +12,7 @@
 
 package fr.linkit.plugin.controller.cli
 
+import fr.linkit.api.local.concurrency.Procrastinator
 import fr.linkit.api.local.plugin.fragment.PluginFragment
 import fr.linkit.api.local.system.AppException
 
@@ -19,10 +20,10 @@ import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 import scala.util.control.NonFatal
 
-class CommandManager extends PluginFragment {
+class CommandManager(procrastinator: Procrastinator) extends PluginFragment {
 
     private val commands: mutable.Map[String, CommandExecutor] = mutable.Map.empty
-    @volatile private var alive = true
+    @volatile private var alive                                = true
 
     def register(command: String, executor: CommandExecutor): Unit =
         commands.put(command.toLowerCase, executor)
@@ -41,23 +42,25 @@ class CommandManager extends PluginFragment {
         if (command == null)
             return
         val args = parseLine(command.trim())
-        val cmd = command.takeWhile(c => !Character.isWhitespace(c)).toLowerCase
+        val cmd  = command.takeWhile(c => !Character.isWhitespace(c)).toLowerCase
         if (!commands.contains(cmd)) {
             Console.err.println(s"cmd '$cmd' not found.")
             return
         }
 
-        try {
-            commands(cmd).execute(args)
-        } catch {
-            case e@(_: CommandException | _: AppException) => Console.err.println(e.getMessage)
-            case NonFatal(e) => e.printStackTrace()
+        procrastinator.runLater {
+            try {
+                commands(cmd).execute(args)
+            } catch {
+                case e@(_: CommandException | _: AppException) => Console.err.println(e.getMessage)
+                case NonFatal(e)                               => e.printStackTrace()
+            }
         }
     }
 
     private def parseLine(line: String): Array[String] = {
         val argBuilder = new StringBuilder
-        val args = ListBuffer.empty[String]
+        val args       = ListBuffer.empty[String]
 
         //exclude first arg, which is the command label
         val indexOfFirstBlankLine = line.indexWhere(Character.isWhitespace)
@@ -66,7 +69,7 @@ class CommandManager extends PluginFragment {
         val rawArgs = line.substring(indexOfFirstBlankLine).trim()
 
         var insideString = false
-        var last = '\u0000'
+        var last         = '\u0000'
         for (c <- rawArgs) {
             if (c == '"' && last != '\\')
                 insideString = !insideString
