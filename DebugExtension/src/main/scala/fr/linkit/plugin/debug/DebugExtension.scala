@@ -14,7 +14,7 @@ package fr.linkit.plugin.debug
 
 import fr.linkit.api.local.plugin.LinkitPlugin
 import fr.linkit.api.local.system.AppLogger
-import fr.linkit.core.connection.network.cache.`object`.SharedObjectsCache
+import fr.linkit.core.connection.network.cache.puppet.SharedObjectsCache
 import fr.linkit.core.local.concurrency.pool.BusyWorkerPool
 import fr.linkit.plugin.controller.ControllerExtension
 import fr.linkit.plugin.controller.cli.CommandManager
@@ -32,7 +32,7 @@ class DebugExtension extends LinkitPlugin {
         commandManager.register("network", new NetworkCommand(getContext.listConnections.map(_.network)))
 
         val pool = BusyWorkerPool.currentPool.get
-        pool.waitCurrentTaskForAtLeast(5000)
+        pool.pauseCurrentTaskForAtLeast(5000)
 
         val testServerConnection = getContext.getConnection("TestServer1").get
         val globalCache = testServerConnection.network.globalCache

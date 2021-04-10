@@ -13,7 +13,7 @@
 package fr.linkit.plugin.debug.commands
 
 import fr.linkit.api.connection.network.cache.SharedCacheManager
-import fr.linkit.core.connection.network.cache.`object`.{Cached, Shared, SharedObject, SharedObjectsCache}
+import fr.linkit.core.connection.network.cache.puppet.SharedObjectsCache
 import fr.linkit.core.connection.network.cache.map.SharedMap
 import fr.linkit.plugin.controller.cli.{CommandException, CommandExecutor, CommandUtils}
 import fr.linkit.plugin.debug.commands.PuppetCommand.Player
@@ -22,7 +22,7 @@ class PuppetCommand(cacheHandler: SharedCacheManager) extends CommandExecutor {
 
     private val repo    = cacheHandler.getCache(50, SharedObjectsCache)
     private val players = cacheHandler.getCache(51, SharedMap[Int, Player])
-            .link(pair => addPlayer(pair._2))
+    players.link(pair => addPlayer(pair._2))
 
     private def addPlayer(player: Player): Unit = {
         val id = player.id
@@ -69,7 +69,7 @@ class PuppetCommand(cacheHandler: SharedCacheManager) extends CommandExecutor {
         player.name = name
         println(s"Player is now $player, updating chip...")
         val chip = repo.getChip[Player](id).get
-        chip.updatePuppet(player)
+        chip.sendUpdatePuppet(player)
         println(s"Chip updated !")
     }
 
@@ -77,17 +77,19 @@ class PuppetCommand(cacheHandler: SharedCacheManager) extends CommandExecutor {
 
 object PuppetCommand {
 
+    import fr.linkit.core.connection.network.cache.puppet.AnnotationHelper._
+
     @SharedObject(autoFlush = true)
-    case class Player(id: Int, @Cached var name: String, var x: Int, var y: Int) extends Serializable {
+    case class Player(id: Int, @Cached var name: String, @Shared var x: Long, @Shared var y: Long) extends Serializable {
 
         @Cached
         def getName: String = name
 
         @Shared
-        def setX(x: Int): Unit = this.x = x
+        def setX(x: Long): Unit = this.x = x
 
         @Shared
-        def setY(y: Int): Unit = this.y = y
+        def setY(y: Long): Unit = this.y = y
     }
 
 }
