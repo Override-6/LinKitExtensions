@@ -13,30 +13,31 @@
 package fr.linkit.plugin.debug.commands
 
 import fr.linkit.api.connection.network.cache.SharedCacheManager
-import fr.linkit.core.connection.network.cache.puppet.SharedObjectsCache
 import fr.linkit.core.connection.network.cache.map.SharedMap
+import fr.linkit.core.connection.network.cache.puppet.SharedObjectsCache
 import fr.linkit.plugin.controller.cli.{CommandException, CommandExecutor, CommandUtils}
 import fr.linkit.plugin.debug.commands.PuppetCommand.Player
 
-class PuppetCommand(cacheHandler: SharedCacheManager) extends CommandExecutor {
+class PuppetCommand(cacheHandler: SharedCacheManager, supportIdentifier: String) extends CommandExecutor {
 
     private val repo    = cacheHandler.getCache(50, SharedObjectsCache)
     private val players = cacheHandler.getCache(51, SharedMap[Int, Player])
-    players.link(pair => addPlayer(pair._2))
 
     private def addPlayer(player: Player): Unit = {
         val id = player.id
+        val cloudPlayer = repo.postCloudObject(id, player)
+        val puppeteer = repo.getPuppeteer[Player](id).get
         if (!players.contains(id))
-            players.put(id, player)
-        repo.chipObject(id, player)
+            players.put(id, cloudPlayer)
     }
 
     override def execute(implicit args: Array[String]): Unit = {
         val order = if (args.length == 0) "" else args(0)
         order match {
             case "create" => createPlayer(args.drop(1)) //remove first arg which is obviously 'create'
-            case "update" => updatePlayer(args.drop(1))
+            case "update" => updatePlayer(args.drop(1)) //remove first arg which is obviously 'update'
             case "list"   => println(s"players: $players")
+            case "desc"   => describePlayerClass()
             case _        => throw CommandException("usage: player [create|update] [...]")
         }
     }
@@ -48,10 +49,15 @@ class PuppetCommand(cacheHandler: SharedCacheManager) extends CommandExecutor {
         val name   = CommandUtils.getValue("name", args)
         val x      = CommandUtils.getValue("x", args).toInt
         val y      = CommandUtils.getValue("y", args).toInt
-        val player = repo.chipObject(id, Player(id, name, x, y))
+        val player = Player(id, supportIdentifier, name, x, y)
 
         println(s"Created $player ! (identifier = $id)")
-        players.put(id, player)
+        addPlayer(player)
+    }
+
+    private def describePlayerClass(): Unit = {
+        println(s"Class ${classOf[Player]}:")
+        classOf[Player].getDeclaredFields.foreach(println)
     }
 
     private def updatePlayer(args: Array[String]): Unit = {
@@ -67,10 +73,7 @@ class PuppetCommand(cacheHandler: SharedCacheManager) extends CommandExecutor {
         player.setX(x)
         player.setY(y)
         player.name = name
-        println(s"Player is now $player, updating chip...")
-        val chip = repo.getChip[Player](id).get
-        chip.sendUpdatePuppet(player)
-        println(s"Chip updated !")
+        println(s"Player is now $player")
     }
 
 }
@@ -80,16 +83,46 @@ object PuppetCommand {
     import fr.linkit.core.connection.network.cache.puppet.AnnotationHelper._
 
     @SharedObject(autoFlush = true)
-    case class Player(id: Int, @Cached var name: String, @Shared var x: Long, @Shared var y: Long) extends Serializable {
+    case class Player(id: Int,
+                      owner: String,
+                      var name: String,
+                      var x: Long,
+                      var y: Long) extends Serializable {
 
-        @Cached
+        @Shared(constant = true)
         def getName: String = name
 
-        @Shared
+
+
+        @Shared()
         def setX(x: Long): Unit = this.x = x
 
-        @Shared
+        @Shared()
         def setY(y: Long): Unit = this.y = y
     }
+
+    /*final class PuppetPlayer(puppeteer: Puppeteer[Player], id: Int, owner: String,
+                             name: String, x: Long, y: Long) extends Player(id, owner, name, x, y) with PuppetObject {
+
+        puppeteer.init(this)
+
+        private var getName_0: String = _
+
+        override def getName: String = {
+            if (getName_0 == null) {
+                getName_0 = puppeteer.sendInvokeAndReturn("getName", x)
+            }
+            getName_0
+        }
+
+        override def setX(x: Long): Unit = {
+            puppeteer.sendInvoke("setX", x)
+        }
+
+        override def setY(y: Long): Unit = {
+            puppeteer.sendInvoke("setY", y)
+        }
+
+    }*/
 
 }

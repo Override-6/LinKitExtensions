@@ -1,20 +1,19 @@
 /*
- * Copyright (c) 2021. Linkit and or its affiliates. All rights reserved.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ *  Copyright (c) 2021. Linkit and or its affiliates. All rights reserved.
+ *  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * This code is free software; you can only use it for personal uses, studies or documentation.
- * You can download this source code, and modify it ONLY FOR PERSONAL USE and you
- * ARE NOT ALLOWED to distribute your MODIFIED VERSION.
+ *  This code is free software; you can only use it for personal uses, studies or documentation.
+ *  You can download this source code, and modify it ONLY FOR PERSONAL USE and you
+ *  ARE NOT ALLOWED to distribute your MODIFIED VERSION.
  *
- * Please contact maximebatista18@gmail.com if you need additional information or have any
- * questions.
+ *  Please contact maximebatista18@gmail.com if you need additional information or have any
+ *  questions.
  */
 
 package fr.linkit.plugin.controller.cli
 
 import fr.linkit.api.local.concurrency.Procrastinator
 import fr.linkit.api.local.plugin.fragment.PluginFragment
-import fr.linkit.api.local.system.AppException
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
@@ -52,8 +51,8 @@ class CommandManager(procrastinator: Procrastinator) extends PluginFragment {
             try {
                 commands(cmd).execute(args)
             } catch {
-                case e@(_: CommandException | _: AppException) => Console.err.println(e.getMessage)
-                case NonFatal(e)                               => e.printStackTrace()
+                case e@(_: CommandException) => Console.err.println(e.getMessage)
+                case NonFatal(e)             => e.printStackTrace()
             }
         }
     }
