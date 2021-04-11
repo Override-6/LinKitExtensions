@@ -24,9 +24,9 @@ class PuppetCommand(cacheHandler: SharedCacheManager, supportIdentifier: String)
     private val players = cacheHandler.getCache(51, SharedMap[Int, Player])
 
     private def addPlayer(player: Player): Unit = {
-        val id = player.id
+        val id          = player.id
         val cloudPlayer = repo.postCloudObject(id, player)
-        val puppeteer = repo.getPuppeteer[Player](id).get
+        val puppeteer   = repo.getPuppeteer[Player](id).get
         if (!players.contains(id))
             players.put(id, cloudPlayer)
     }
@@ -89,10 +89,12 @@ object PuppetCommand {
                       var x: Long,
                       var y: Long) extends Serializable {
 
+        def this(other: Player) = {
+            this(other.id, other.owner, other.name, other.x, other.y)
+        }
+
         @Shared(constant = true)
         def getName: String = name
-
-
 
         @Shared()
         def setX(x: Long): Unit = this.x = x
@@ -100,29 +102,5 @@ object PuppetCommand {
         @Shared()
         def setY(y: Long): Unit = this.y = y
     }
-
-    /*final class PuppetPlayer(puppeteer: Puppeteer[Player], id: Int, owner: String,
-                             name: String, x: Long, y: Long) extends Player(id, owner, name, x, y) with PuppetObject {
-
-        puppeteer.init(this)
-
-        private var getName_0: String = _
-
-        override def getName: String = {
-            if (getName_0 == null) {
-                getName_0 = puppeteer.sendInvokeAndReturn("getName", x)
-            }
-            getName_0
-        }
-
-        override def setX(x: Long): Unit = {
-            puppeteer.sendInvoke("setX", x)
-        }
-
-        override def setY(y: Long): Unit = {
-            puppeteer.sendInvoke("setY", y)
-        }
-
-    }*/
 
 }
