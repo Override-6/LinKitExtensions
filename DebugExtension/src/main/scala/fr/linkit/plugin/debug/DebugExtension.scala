@@ -32,7 +32,7 @@ class DebugExtension extends LinkitPlugin {
         commandManager.register("network", new NetworkCommand(getContext.listConnections.map(_.network)))
 
         val pool = BusyWorkerPool.currentPool.get
-        pool.pauseCurrentTaskForAtLeast(5000)
+        pool.pauseCurrentTaskForAtLeast(1000)
 
         val testServerConnection = getContext.getConnection("TestServer1").get
         val globalCache = testServerConnection.network.globalCache
