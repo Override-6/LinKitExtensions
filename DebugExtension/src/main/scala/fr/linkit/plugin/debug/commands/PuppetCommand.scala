@@ -26,7 +26,6 @@ class PuppetCommand(cacheHandler: SharedCacheManager, supportIdentifier: String)
     private def addPlayer(player: Player): Unit = {
         val id          = player.id
         val cloudPlayer = repo.postCloudObject(id, player)
-        val puppeteer   = repo.getPuppeteer[Player](id).get
         if (!players.contains(id))
             players.put(id, cloudPlayer)
     }
@@ -101,6 +100,8 @@ object PuppetCommand {
 
         @Shared()
         def setY(y: Long): Unit = this.y = y
+
+        override def toString: String = s"Player($id, $owner, $name, $x, $y)"
     }
 
 }
