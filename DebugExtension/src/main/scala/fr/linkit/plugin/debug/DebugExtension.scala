@@ -34,10 +34,10 @@ class DebugExtension extends LinkitPlugin {
         val pool = BusyWorkerPool.currentPool.get
         pool.pauseCurrentTaskForAtLeast(1000)
 
-        val testServerConnection = getContext.getConnection("TestServer1").get
+       /* val testServerConnection = getContext.getConnection("TestServer1").get
         val globalCache = testServerConnection.network.globalCache
         commandManager.register("player", new PuppetCommand(globalCache, testServerConnection.supportIdentifier))
 
-        AppLogger.trace("Debug extension enabled.")
+        AppLogger.trace("Debug extension enabled.")*/
     }
 }
