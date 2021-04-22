@@ -13,12 +13,15 @@
 package fr.linkit.plugin.debug
 
 import fr.linkit.api.local.plugin.LinkitPlugin
+import fr.linkit.api.local.resource.AutomaticBehaviorOption
+import fr.linkit.api.local.resource.representation.{ResourceFile, ResourceFolder}
 import fr.linkit.api.local.system.AppLogger
-import fr.linkit.core.connection.network.cache.puppet.SharedObjectsCache
 import fr.linkit.core.local.concurrency.pool.{BusyWorkerPool, DedicatedWorkerController}
 import fr.linkit.plugin.controller.ControllerExtension
 import fr.linkit.plugin.controller.cli.CommandManager
 import fr.linkit.plugin.debug.commands.{NetworkCommand, PuppetCommand}
+
+import scala.util.Try
 
 class DebugExtension extends LinkitPlugin {
 
@@ -31,12 +34,27 @@ class DebugExtension extends LinkitPlugin {
 
         commandManager.register("network", new NetworkCommand(getContext.listConnections.map(_.network)))
 
-        val pool = BusyWorkerPool.currentPool.get
+        val pool       = BusyWorkerPool.currentPool.get
         val controller = new DedicatedWorkerController(pool)
-        controller.waitTask(getContext.getConnection("TestServer1").isDefined)
+        controller.waitTaskWhile {
+            println(s"getContext.listConnections = ${getContext.listConnections}")
+            getContext.getConnection("TestServer1").isEmpty
+        }
 
         val testServerConnection = getContext.getConnection("TestServer1").get
-        val globalCache = testServerConnection.network.globalCache
+        val globalCache          = testServerConnection.network.globalCache
+        val resources            = getContext.getAppResources
+
+        println(s"resources = ${resources}")
+        val file = Try(resources.openResourceFile("Test.exe", true))
+                .getOrElse(resources.get[ResourceFile]("Test.exe"))
+
+        val folder = Try(resources.openResourceFolder("MyFolder", false, AutomaticBehaviorOption.values(): _*))
+                .getOrElse(resources.get[ResourceFolder]("MyFolder"))
+
+        println(s"file = ${file}")
+        println(s"folder = ${folder}")
+
         commandManager.register("player", new PuppetCommand(globalCache, testServerConnection.supportIdentifier))
 
         AppLogger.trace("Debug extension enabled.")
