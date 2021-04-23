@@ -16,6 +16,7 @@ import fr.linkit.api.local.plugin.LinkitPlugin
 import fr.linkit.api.local.resource.external.{ResourceFile, ResourceFolder}
 import fr.linkit.api.local.system.AppLogger
 import fr.linkit.core.local.concurrency.pool.{BusyWorkerPool, DedicatedWorkerController}
+import fr.linkit.core.local.resource.entry.{LocalResourceFile, LocalResourceFolder}
 import fr.linkit.plugin.controller.ControllerExtension
 import fr.linkit.plugin.controller.cli.CommandManager
 import fr.linkit.plugin.debug.commands.{NetworkCommand, PuppetCommand}
@@ -44,10 +45,10 @@ class DebugExtension extends LinkitPlugin {
 
         println(s"resources = ${resources}")
         val file = resources.find[ResourceFile]("Test.exe")
-                .getOrElse(resources.openResourceFile("Test.exe"))
+                .getOrElse(resources.openResource("Test.exe", LocalResourceFile))
 
         val folder = resources.find[ResourceFolder]("MyFolder")
-                .getOrElse(resources.openResourceFolder("MyFolder"))
+                .getOrElse(resources.openResource("MyFolder", LocalResourceFolder))
 
         println(s"file = ${file}")
         println(s"folder = ${folder}")
