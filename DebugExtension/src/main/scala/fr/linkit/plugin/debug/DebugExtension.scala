@@ -19,7 +19,7 @@ import fr.linkit.core.local.concurrency.pool.{BusyWorkerPool, DedicatedWorkerCon
 import fr.linkit.core.local.resource.local.{LocalResourceFile, LocalResourceFolder}
 import fr.linkit.plugin.controller.ControllerExtension
 import fr.linkit.plugin.controller.cli.CommandManager
-import fr.linkit.plugin.debug.commands.{NetworkCommand, PuppetCommand}
+import fr.linkit.plugin.debug.commands.{NetworkCommand, PuppetCommand, RemoteFSACommand}
 
 class DebugExtension extends LinkitPlugin {
 
@@ -30,7 +30,6 @@ class DebugExtension extends LinkitPlugin {
     override def onEnable(): Unit = {
         val commandManager = getFragmentOrAbort(classOf[ControllerExtension], classOf[CommandManager])
 
-        commandManager.register("network", new NetworkCommand(getContext.listConnections.map(_.network)))
 
         val pool       = BusyWorkerPool.currentPool.get
         val controller = new DedicatedWorkerController(pool)
@@ -50,6 +49,8 @@ class DebugExtension extends LinkitPlugin {
 
 
         commandManager.register("player", new PuppetCommand(globalCache, testServerConnection.supportIdentifier))
+        commandManager.register("network", new NetworkCommand(getContext.listConnections.map(_.network)))
+        commandManager.register("fsa", new RemoteFSACommand(getContext))
 
         AppLogger.trace("Debug extension enabled.")
     }
