@@ -16,7 +16,7 @@ import fr.linkit.api.local.plugin.LinkitPlugin
 import fr.linkit.api.local.resource.external.{ResourceFile, ResourceFolder}
 import fr.linkit.api.local.system.AppLogger
 import fr.linkit.core.local.concurrency.pool.{BusyWorkerPool, DedicatedWorkerController}
-import fr.linkit.core.local.resource.entry.{LocalResourceFile, LocalResourceFolder}
+import fr.linkit.core.local.resource.local.{LocalResourceFile, LocalResourceFolder}
 import fr.linkit.plugin.controller.ControllerExtension
 import fr.linkit.plugin.controller.cli.CommandManager
 import fr.linkit.plugin.debug.commands.{NetworkCommand, PuppetCommand}
@@ -35,7 +35,6 @@ class DebugExtension extends LinkitPlugin {
         val pool       = BusyWorkerPool.currentPool.get
         val controller = new DedicatedWorkerController(pool)
         controller.waitTaskWhile {
-            println(s"getContext.listConnections = ${getContext.listConnections}")
             getContext.getConnection("TestServer1").isEmpty
         }
 
@@ -43,15 +42,12 @@ class DebugExtension extends LinkitPlugin {
         val globalCache          = testServerConnection.network.globalCache
         val resources            = getContext.getAppResources
 
-        println(s"resources = ${resources}")
         val file = resources.find[ResourceFile]("Test.exe")
                 .getOrElse(resources.openResource("Test.exe", LocalResourceFile))
 
         val folder = resources.find[ResourceFolder]("MyFolder")
                 .getOrElse(resources.openResource("MyFolder", LocalResourceFolder))
 
-        println(s"file = ${file}")
-        println(s"folder = ${folder}")
 
         commandManager.register("player", new PuppetCommand(globalCache, testServerConnection.supportIdentifier))
 

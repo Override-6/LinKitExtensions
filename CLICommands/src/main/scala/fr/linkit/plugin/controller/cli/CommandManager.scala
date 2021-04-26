@@ -21,8 +21,8 @@ import scala.util.control.NonFatal
 
 class CommandManager(procrastinator: Procrastinator) extends PluginFragment {
 
-    private val commands: mutable.Map[String, CommandExecutor] = mutable.Map.empty
-    @volatile private var alive                                = true
+    private val commands          : mutable.Map[String, CommandExecutor] = mutable.Map.empty
+    @volatile private var alive                                          = true
 
     def register(command: String, executor: CommandExecutor): Unit =
         commands.put(command.toLowerCase, executor)
@@ -34,6 +34,7 @@ class CommandManager(procrastinator: Procrastinator) extends PluginFragment {
         })
 
         thread.setName("Command listener Thread")
+        thread.setDaemon(true)
         thread.start()
     }
 

@@ -63,6 +63,7 @@ object InputConsole {
             }
         })
         consoleThread.setName("Console Inputs Queue")
+        consoleThread.setDaemon(true)
         consoleThread.start()
     }
 
@@ -75,7 +76,7 @@ object InputConsole {
         def getLine: String = {
             if (line == null)
                 synchronized {
-                    wait
+                    wait()
                 }
             line
         }
