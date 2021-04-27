@@ -12,13 +12,14 @@
 
 package fr.linkit.plugin.debug.commands
 
-import fr.linkit.api.connection.ExternalConnection
+import fr.linkit.api.connection.{CentralConnection, ExternalConnection}
 import fr.linkit.api.local.ApplicationContext
 import fr.linkit.core.local.system.fsa.nio.NIOFileSystemAdapter
 import fr.linkit.core.local.system.fsa.remote.RemoteFileSystemAdapter
 import fr.linkit.plugin.controller.cli.{CommandException, CommandExecutor}
 
 class RemoteFSACommand(context: ApplicationContext) extends CommandExecutor {
+
 
     override def execute(implicit args: Array[String]): Unit = {
         if (args.length < 3)
@@ -29,7 +30,12 @@ class RemoteFSACommand(context: ApplicationContext) extends CommandExecutor {
         val path   = args(2)
 
         println(s"context.listConnections = ${context.listConnections}")
-        val connection = context.getConnection("TestServer1").getOrElse(throw CommandException(s"TestServer1 is not connected."))
+        val serverConnection = context.getConnection("TestServer1")
+                .getOrElse(throw CommandException(s"TestServer1 is not connected."))
+                .asInstanceOf[CentralConnection]
+
+        val connection = serverConnection.getConnection(target).getOrElse(throw CommandException(s"$target is not connected."))
+
         val remoteFSA  = RemoteFileSystemAdapter.connect(classOf[NIOFileSystemAdapter], connection)
 
         order match {
