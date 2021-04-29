@@ -39,7 +39,7 @@ class NetworkCommand(networks: => Iterable[Network]) extends CommandExecutor {
             println(s"${network.serverIdentifier}:")
             println(s"There are $count connections over this network.")
             println(s"Started at $upDate (Since: $duration)")
-            //println(s"Self entity : $self, enabled Remote Fragments : $selfRemoteFragments")
+            println(s"Self entity : $self, enabled Remote Fragments : $selfRemoteFragments")
             println(s"\tStatus : ${self.getConnectionState}")
             println(s"All currently connected entities : $entitiesNames")
             println("--------------------------------------------------")
@@ -57,11 +57,11 @@ class NetworkCommand(networks: => Iterable[Network]) extends CommandExecutor {
         val connectionDuration = getDurationAsString(connectionDate.toLocalDateTime)
 
         println(s"-$name : ")
-        //println(s"    Enabled Remote Fragments : $remoteFragments")
+        println(s"    Enabled Remote Fragments : $remoteFragments")
         println(s"\tStatus : ${entity.getConnectionState}")
         println(s"\tConnected at : $connectionDate (Since: $connectionDuration)")
-        //println(s"    $apiVersion")
-        //println(s"    $implVersion")
+        println(s"    $apiVersion")
+        println(s"    $implVersion")
     }
 
     private def getDurationAsString(from: LocalDateTime): String = {
