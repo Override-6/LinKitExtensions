@@ -35,7 +35,7 @@ class PuppetCommand(cacheHandler: SharedCacheManager, supportIdentifier: String)
         order match {
             case "create" => createPlayer(args.drop(1)) //remove first arg which is obviously 'create'
             case "update" => updatePlayer(args.drop(1)) //remove first arg which is obviously 'update'
-            case "list"   => println(s"players: $players")
+            case "list"   => //println(s"players: $players")
             case "desc"   => describePlayerClass()
             case _        => throw CommandException("usage: player [create|update] [...]")
         }
@@ -50,12 +50,12 @@ class PuppetCommand(cacheHandler: SharedCacheManager, supportIdentifier: String)
         val y      = CommandUtils.getValue("y", args).toInt
         val player = Player(id, supportIdentifier, name, x, y)
 
-        println(s"Created $player ! (identifier = $id)")
+        //println(s"Created $player ! (identifier = $id)")
         addPlayer(player)
     }
 
     private def describePlayerClass(): Unit = {
-        println(s"Class ${classOf[Player]}:")
+        //println(s"Class ${classOf[Player]}:")
         classOf[Player].getDeclaredFields.foreach(println)
     }
 
@@ -68,11 +68,11 @@ class PuppetCommand(cacheHandler: SharedCacheManager, supportIdentifier: String)
         val x    = CommandUtils.getValue("x", player.x.toString, args).toInt
         val y    = CommandUtils.getValue("y", player.y.toString, args).toInt
 
-        println(s"Updating player $player...")
+        //println(s"Updating player $player...")
         player.setX(x)
         player.setY(y)
         player.name = name
-        println(s"Player is now $player")
+        //println(s"Player is now $player")
     }
 
 }

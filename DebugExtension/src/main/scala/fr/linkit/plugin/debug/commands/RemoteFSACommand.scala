@@ -29,7 +29,7 @@ class RemoteFSACommand(context: ApplicationContext) extends CommandExecutor {
         val order  = args(1)
         val path   = args(2)
 
-        println(s"context.listConnections = ${context.listConnections}")
+        //println(s"context.listConnections = ${context.listConnections}")
         val serverConnection = context.getConnection("TestServer1")
                 .getOrElse(throw CommandException(s"TestServer1 is not connected."))
                 .asInstanceOf[CentralConnection]
@@ -41,16 +41,16 @@ class RemoteFSACommand(context: ApplicationContext) extends CommandExecutor {
         order match {
             case "create" =>
                 remoteFSA.create(path)
-                println(s"Created $path on device $target")
+                //println(s"Created $path on device $target")
             case "delete" =>
                 remoteFSA.deleteIfExists(path)
-                println(s"Removed $path on device $target")
+                //println(s"Removed $path on device $target")
             case "write"  =>
                 val text = args.drop(2).mkString("")
                 remoteFSA.getAdapter(path).write(text.getBytes)
-                println(s"Written '$text' into $path on device $target")
+                //println(s"Written '$text' into $path on device $target")
             case "read" =>
-                println(remoteFSA.getAdapter(path).getContentString)
+                //println(remoteFSA.getAdapter(path).getContentString)
         }
     }
 

@@ -20,13 +20,13 @@ object InputConsole {
     private val ticketQueue = new PriorityBlockingQueue[InputRequestTicket]()
 
     def ask(msg: String, possibleResponses: String*): String = {
-        println(msg)
+        //println(msg)
         var input = requestNextInput(10)
         if (possibleResponses.isEmpty)
             input
         else {
             while (possibleResponses.forall(_.toLowerCase != input)) {
-                println(msg)
+                //println(msg)
                 input = requestNextInput(10)
             }
             input

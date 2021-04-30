@@ -20,14 +20,14 @@ import java.time.{Duration, LocalDateTime}
 class NetworkCommand(networks: => Iterable[Network]) extends CommandExecutor {
 
     override def execute(implicit args: Array[String]): Unit = {
-        println(s"networks = ${networks}")
+        //println(s"networks = ${networks}")
         networks.foreach(genDescription)
     }
 
     private def genDescription(network: Network): Unit = {
-        println(s"Running network later: $network")
+        //println(s"Running network later: $network")
         network.connection.runLater {
-            println("Running description generation :D")
+            //println("Running description generation :D")
             val entities      = network.listEntities
             val entitiesNames = entities.map(_.identifier).mkString(", ")
             val count         = entities.size
@@ -39,7 +39,7 @@ class NetworkCommand(networks: => Iterable[Network]) extends CommandExecutor {
             println(s"${network.serverIdentifier}:")
             println(s"There are $count connections over this network.")
             println(s"Started at $upDate (Since: $duration)")
-            println(s"Self entity : $self, enabled Remote Fragments : $selfRemoteFragments")
+            println(s"Self entity : $self")
             println(s"\tStatus : ${self.getConnectionState}")
             println(s"All currently connected entities : $entitiesNames")
             println("--------------------------------------------------")
@@ -52,16 +52,16 @@ class NetworkCommand(networks: => Iterable[Network]) extends CommandExecutor {
         val name               = entity.identifier
         //val remoteFragments = entity.listRemoteFragmentControllers.map(_.nameIdentifier).mkString(", ")
         //val apiVersion = entity.apiVersion
-        //val implVersion = entity.relayVersion
+        //val implVersion = entity.v
         val connectionDate     = entity.connectionDate
         val connectionDuration = getDurationAsString(connectionDate.toLocalDateTime)
 
         println(s"-$name : ")
-        println(s"    Enabled Remote Fragments : $remoteFragments")
+       // //println(s"    Enabled Remote Fragments : $remoteFragments")
         println(s"\tStatus : ${entity.getConnectionState}")
         println(s"\tConnected at : $connectionDate (Since: $connectionDuration)")
-        println(s"    $apiVersion")
-        println(s"    $implVersion")
+        ////println(s"    $apiVersion")
+        ////println(s"    $implVersion")
     }
 
     private def getDurationAsString(from: LocalDateTime): String = {
