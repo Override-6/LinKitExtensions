@@ -14,13 +14,13 @@ package fr.linkit.plugin.debug.commands
 
 import fr.linkit.api.connection.network.cache.SharedCacheManager
 import fr.linkit.core.connection.network.cache.map.SharedMap
-import fr.linkit.core.connection.network.cache.puppet.SharedObjectsCache
+import fr.linkit.core.connection.network.cache.puppet.CloudObjectRepository
 import fr.linkit.plugin.controller.cli.{CommandException, CommandExecutor, CommandUtils}
 import fr.linkit.plugin.debug.commands.PuppetCommand.Player
 
 class PuppetCommand(cacheHandler: SharedCacheManager, supportIdentifier: String) extends CommandExecutor {
 
-    private val repo    = cacheHandler.getCache(50, SharedObjectsCache)
+    private val repo    = cacheHandler.getCache(50, CloudObjectRepository)
     private val players = cacheHandler.getCache(51, SharedMap[Int, Player])
 
     private def addPlayer(player: Player): Unit = {
