@@ -13,8 +13,8 @@
 package fr.linkit.plugin.debug.commands
 
 import fr.linkit.api.connection.network.cache.SharedCacheManager
-import fr.linkit.core.connection.network.cache.map.SharedMap
-import fr.linkit.core.connection.network.cache.puppet.CloudObjectRepository
+import fr.linkit.engine.connection.network.cache.map.SharedMap
+import fr.linkit.engine.connection.network.cache.puppet.CloudObjectRepository
 import fr.linkit.plugin.controller.cli.{CommandException, CommandExecutor, CommandUtils}
 import fr.linkit.plugin.debug.commands.PuppetCommand.Player
 
@@ -79,7 +79,7 @@ class PuppetCommand(cacheHandler: SharedCacheManager, supportIdentifier: String)
 
 object PuppetCommand {
 
-    import fr.linkit.core.connection.network.cache.puppet.AnnotationHelper._
+    import fr.linkit.engine.connection.network.cache.puppet.AnnotationHelper._
 
     @SharedObject(autoFlush = true)
     case class Player(id: Int,

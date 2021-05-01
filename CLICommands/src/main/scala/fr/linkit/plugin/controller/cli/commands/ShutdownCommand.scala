@@ -13,7 +13,7 @@
 package fr.linkit.plugin.controller.cli.commands
 
 import fr.linkit.api.local.ApplicationContext
-import fr.linkit.core.local.LinkitApplication
+import fr.linkit.engine.local.LinkitApplication
 import fr.linkit.plugin.controller.cli.CommandExecutor
 
 class ShutdownCommand(context: ApplicationContext) extends CommandExecutor {

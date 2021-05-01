@@ -14,8 +14,8 @@ package fr.linkit.plugin.debug.commands
 
 import fr.linkit.api.connection.{CentralConnection, ExternalConnection}
 import fr.linkit.api.local.ApplicationContext
-import fr.linkit.core.local.system.fsa.nio.NIOFileSystemAdapter
-import fr.linkit.core.local.system.fsa.remote.RemoteFileSystemAdapter
+import fr.linkit.engine.local.system.fsa.nio.NIOFileSystemAdapter
+import fr.linkit.engine.local.system.fsa.remote.RemoteFileSystemAdapter
 import fr.linkit.plugin.controller.cli.{CommandException, CommandExecutor}
 
 class RemoteFSACommand(context: ApplicationContext) extends CommandExecutor {
