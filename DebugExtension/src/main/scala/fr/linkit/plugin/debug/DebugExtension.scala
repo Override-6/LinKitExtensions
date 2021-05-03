@@ -15,7 +15,7 @@ package fr.linkit.plugin.debug
 import fr.linkit.api.local.plugin.LinkitPlugin
 import fr.linkit.api.local.resource.external.{ResourceFile, ResourceFolder}
 import fr.linkit.api.local.system.AppLogger
-import fr.linkit.engine.local.concurrency.pool.BusyWorkerPool
+import fr.linkit.engine.local.concurrency.pool.{BusyWorkerPool, SimpleWorkerController}
 import fr.linkit.engine.local.resource.local.{LocalResourceFile, LocalResourceFolder}
 import fr.linkit.plugin.controller.ControllerExtension
 import fr.linkit.plugin.controller.cli.CommandManager
@@ -31,8 +31,8 @@ class DebugExtension extends LinkitPlugin {
         val commandManager = getFragmentOrAbort(classOf[ControllerExtension], classOf[CommandManager])
 
 
-        val pool       = BusyWorkerPool.currentPool.get
-        val controller = new DedicatedWorkerController(pool)
+        val pool       = WorkerPools.currentPool.get
+        val controller = new SimpleWorkerController()
         controller.pauseCurrentTask(2000)
 
         val testServerConnection = getContext.getConnection("TestServer1").get
