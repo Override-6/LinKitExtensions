@@ -12,22 +12,18 @@
 
 package fr.linkit.plugin.debug.commands
 
-import fr.linkit.api.connection.network.cache.SharedCacheManager
-import fr.linkit.engine.connection.network.cache.map.SharedMap
-import fr.linkit.engine.connection.network.cache.puppet.CloudObjectRepository
+import fr.linkit.api.connection.network.cache.{SharedCacheManager, repo}
+import fr.linkit.engine.connection.network.cache.repo.CloudPuppetRepository
 import fr.linkit.plugin.controller.cli.{CommandException, CommandExecutor, CommandUtils}
 import fr.linkit.plugin.debug.commands.PuppetCommand.Player
 
 class PuppetCommand(cacheHandler: SharedCacheManager, supportIdentifier: String) extends CommandExecutor {
 
-    private val repo    = cacheHandler.getCache(50, CloudObjectRepository)
-    private val players = cacheHandler.getCache(51, SharedMap[Int, Player])
+    private val repo = cacheHandler.getCache(50, CloudPuppetRepository[Player])
 
     private def addPlayer(player: Player): Unit = {
         val id          = player.id
-        val cloudPlayer = repo.postCloudObject(id, player)
-        if (!players.contains(id))
-            players.put(id, cloudPlayer)
+        repo.postObject(id, player)
     }
 
     override def execute(implicit args: Array[String]): Unit = {
@@ -62,7 +58,7 @@ class PuppetCommand(cacheHandler: SharedCacheManager, supportIdentifier: String)
     private def updatePlayer(args: Array[String]): Unit = {
         implicit val usage: String = "usage: player update [id=?] <name=?|x=?|y=?>"
         val id     = CommandUtils.getValue("id", args).toInt
-        val player = players.getOrElse(id, throw CommandException("Player does not exists"))
+        val player = repo.getOrElse(id, throw CommandException("Player does not exists"))
 
         val name = CommandUtils.getValue("name", player.getName, args)
         val x    = CommandUtils.getValue("x", player.x.toString, args).toInt
@@ -79,9 +75,7 @@ class PuppetCommand(cacheHandler: SharedCacheManager, supportIdentifier: String)
 
 object PuppetCommand {
 
-    import fr.linkit.engine.connection.network.cache.puppet.AnnotationHelper._
-
-    @SharedObject(autoFlush = true)
+    @repo.SharedObject(autoFlush = true)
     case class Player(id: Int,
                       owner: String,
                       var name: String,
@@ -92,13 +86,13 @@ object PuppetCommand {
             this(other.id, other.owner, other.name, other.x, other.y)
         }
 
-        @Shared(constant = true)
+        @repo.Shared(constant = true)
         def getName: String = name
 
-        @Shared()
+        @repo.Shared()
         def setX(x: Long): Unit = this.x = x
 
-        @Shared()
+        @repo.Shared()
         def setY(y: Long): Unit = this.y = y
 
         override def toString: String = s"Player($id, $owner, $name, $x, $y)"
