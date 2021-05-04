@@ -12,6 +12,7 @@
 
 package fr.linkit.plugin.debug
 
+import fr.linkit.api.local.concurrency.WorkerPools
 import fr.linkit.api.local.plugin.LinkitPlugin
 import fr.linkit.api.local.resource.external.{ResourceFile, ResourceFolder}
 import fr.linkit.api.local.system.AppLogger
