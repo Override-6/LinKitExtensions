@@ -17,7 +17,7 @@ import fr.linkit.api.local.plugin.LinkitPlugin
 import fr.linkit.api.local.resource.external.{ResourceFile, ResourceFolder}
 import fr.linkit.api.local.system.AppLogger
 import fr.linkit.engine.local.concurrency.pool.{BusyWorkerPool, SimpleWorkerController}
-import fr.linkit.engine.local.resource.local.{LocalResourceFile, LocalResourceFolder}
+import fr.linkit.engine.local.resource.external.{LocalResourceFile, LocalResourceFolder}
 import fr.linkit.plugin.controller.ControllerExtension
 import fr.linkit.plugin.controller.cli.CommandManager
 import fr.linkit.plugin.debug.commands.{NetworkCommand, PuppetCommand, RemoteFSACommand}
