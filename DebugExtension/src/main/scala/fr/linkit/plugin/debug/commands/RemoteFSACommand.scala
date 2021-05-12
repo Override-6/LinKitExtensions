@@ -12,17 +12,16 @@
 
 package fr.linkit.plugin.debug.commands
 
-import fr.linkit.api.connection.{CentralConnection, ExternalConnection}
+import fr.linkit.api.connection.CentralConnection
 import fr.linkit.api.local.ApplicationContext
 import fr.linkit.engine.local.system.fsa.nio.NIOFileSystemAdapter
-import fr.linkit.engine.local.system.fsa.remote.RemoteFileSystemAdapter
 import fr.linkit.plugin.controller.cli.{CommandException, CommandExecutor}
 
 class RemoteFSACommand(context: ApplicationContext) extends CommandExecutor {
 
 
     override def execute(implicit args: Array[String]): Unit = {
-        if (args.length < 3)
+        /*if (args.length < 3)
             throw CommandException("usage: fsa <target> <create|delete|write|read> <path> [order-args]")
 
         val target = args(0)
@@ -35,8 +34,7 @@ class RemoteFSACommand(context: ApplicationContext) extends CommandExecutor {
                 .asInstanceOf[CentralConnection]
 
         val connection = serverConnection.getConnection(target).getOrElse(throw CommandException(s"$target is not connected."))
-
-        val remoteFSA  = RemoteFileSystemAdapter.connect(classOf[NIOFileSystemAdapter], connection)
+        val cache = connection.network.globalCache.getCache[]
 
         order match {
             case "create" =>
@@ -51,7 +49,7 @@ class RemoteFSACommand(context: ApplicationContext) extends CommandExecutor {
                 println(s"Written '$text' into $path on device $target")
             case "read" =>
                 println(remoteFSA.getAdapter(path).getContentString)
-        }
+        }*/
     }
 
 }

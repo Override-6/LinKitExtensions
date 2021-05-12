@@ -75,7 +75,6 @@ class PuppetCommand(cacheHandler: SharedCacheManager, supportIdentifier: String)
 
 object PuppetCommand {
 
-    @repo.SharedObject(autoFlush = true)
     case class Player(id: Int,
                       owner: String,
                       var name: String,
@@ -86,13 +85,10 @@ object PuppetCommand {
             this(other.id, other.owner, other.name, other.x, other.y)
         }
 
-        @repo.Shared(constant = true)
         def getName: String = name
 
-        @repo.Shared()
         def setX(x: Long): Unit = this.x = x
 
-        @repo.Shared()
         def setY(y: Long): Unit = this.y = y
 
         override def toString: String = s"Player($id, $owner, $name, $x, $y)"
