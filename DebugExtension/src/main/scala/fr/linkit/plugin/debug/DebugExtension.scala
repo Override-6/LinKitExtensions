@@ -37,14 +37,11 @@ class DebugExtension extends LinkitPlugin {
         controller.pauseCurrentTask(2000)
 
         val testServerConnection = getContext.getConnection("TestServer1").get
-        val globalCache          = testServerConnection.network.globalCache
+        val globalCache          = testServerConnection.network.cache
         val resources            = getContext.getAppResources
 
-        val file = resources.find[ResourceFile]("Test.exe")
-                .getOrElse(resources.openResource("Test.exe", LocalResourceFile))
-
-        val folder = resources.find[ResourceFolder]("MyFolder")
-                .getOrElse(resources.openResource("MyFolder", LocalResourceFolder))
+        val file = resources.getOrOpen[LocalResourceFolder]("Test.exe")
+        val folder = resources.getOrOpen[LocalResourceFolder]("MyFolder")
 
 
         commandManager.register("player", new PuppetCommand(globalCache, testServerConnection.supportIdentifier))

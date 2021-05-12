@@ -12,8 +12,8 @@
 
 package fr.linkit.plugin.debug.commands
 
-import fr.linkit.api.connection.network.cache.{SharedCacheManager, repo}
-import fr.linkit.engine.connection.network.cache.repo.CloudPuppetRepository
+import fr.linkit.api.connection.cache.{SharedCacheManager, repo}
+import fr.linkit.engine.connection.cache.repo.CloudPuppetRepository
 import fr.linkit.plugin.controller.cli.{CommandException, CommandExecutor, CommandUtils}
 import fr.linkit.plugin.debug.commands.PuppetCommand.Player
 

@@ -12,7 +12,7 @@
 
 package fr.linkit.plugin.debug.commands
 
-import fr.linkit.api.connection.network.{Network, NetworkEntity}
+import fr.linkit.api.connection.network.{Engine, Network}
 import fr.linkit.plugin.controller.cli.CommandExecutor
 
 import java.time.{Duration, LocalDateTime}
@@ -25,43 +25,38 @@ class NetworkCommand(networks: => Iterable[Network]) extends CommandExecutor {
     }
 
     private def genDescription(network: Network): Unit = {
-        //println(s"Running network later: $network")
         network.connection.runLater {
-            //println("Running description generation :D")
-            val entities      = network.listEntities
-            val entitiesNames = entities.map(_.identifier).mkString(", ")
-            val count         = entities.size
-            val upDate        = network.startUpDate.toLocalDateTime
-            val self          = network.connectionEntity
-            //val selfRemoteFragments = self.listRemoteFragmentControllers.map(_.nameIdentifier).mkString(", ")
-            val duration      = getDurationAsString(upDate)
+            val engines      = network.listEngines
+            val enginesName = engines.map(_.identifier).mkString(", ")
+            val count       = engines.size
+            val upDate      = network.startUpDate
+            val self        = network.connectionEngine
+            val duration    = getDurationAsString(upDate.toLocalDateTime)
 
             println(s"${network.serverIdentifier}:")
-            println(s"There are $count connections over this network.")
+            println(s"There are $count engines over this network.")
             println(s"Started at $upDate (Since: $duration)")
-            println(s"Self entity : $self")
+            println(s"Self engine : $self")
             println(s"\tStatus : ${self.getConnectionState}")
-            println(s"All currently connected entities : $entitiesNames")
+            println(s"All currently connected engines : $enginesName")
             println("--------------------------------------------------")
-            println("For all entities : ")
-            entities.foreach(genDescription)
+            println("For all engines : ")
+            engines.foreach(genDescription)
         }
     }
 
-    private def genDescription(entity: NetworkEntity): Unit = {
-        val name               = entity.identifier
-        //val remoteFragments = entity.listRemoteFragmentControllers.map(_.nameIdentifier).mkString(", ")
-        //val apiVersion = entity.apiVersion
-        //val implVersion = entity.v
-        val connectionDate     = entity.connectionDate
+    private def genDescription(engine: Engine): Unit = {
+        val name               = engine.identifier
+        val connectionDate     = engine.connectionDate
+        val versions           = engine.versions
         val connectionDuration = getDurationAsString(connectionDate.toLocalDateTime)
 
         println(s"-$name : ")
-       // //println(s"    Enabled Remote Fragments : $remoteFragments")
-        println(s"\tStatus : ${entity.getConnectionState}")
-        println(s"\tConnected at : $connectionDate (Since: $connectionDuration)")
-        ////println(s"    $apiVersion")
-        ////println(s"    $implVersion")
+        println(s"\tStatus                 : ${engine.getConnectionState}")
+        println(s"\tConnected at           : $connectionDate (Since: $connectionDuration)")
+        println(s"\tAPI Version            | ${versions.apiVersion}")
+        println(s"\tEngine Version         | ${versions.engineVersion}")
+        println(s"\tImplementation Version | ${versions.implementationVersion}")
     }
 
     private def getDurationAsString(from: LocalDateTime): String = {
@@ -71,7 +66,7 @@ class NetworkCommand(networks: => Iterable[Network]) extends CommandExecutor {
         var hours   = minutes / 60
         var days    = hours / 24
         var months  = days / 31
-        val years   = (months / 12)
+        val years   = months / 12
 
         millis %= 1000
         seconds %= 60
