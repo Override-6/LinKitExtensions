@@ -12,18 +12,18 @@
 
 package fr.linkit.plugin.debug.commands
 
-import fr.linkit.api.connection.cache.{SharedCacheManager, repo}
-import fr.linkit.engine.connection.cache.repo.CloudPuppetRepository
+import fr.linkit.api.connection.cache.SharedCacheManager
+import fr.linkit.engine.connection.cache.repo.CloudObjectRepository
 import fr.linkit.plugin.controller.cli.{CommandException, CommandExecutor, CommandUtils}
-import fr.linkit.plugin.debug.commands.PuppetCommand.Player
 
-class PuppetCommand(cacheHandler: SharedCacheManager, supportIdentifier: String) extends CommandExecutor {
+class PlayerCommand(cacheHandler: SharedCacheManager, supportIdentifier: String) extends CommandExecutor {
 
-    private val repo = cacheHandler.getCache(50, CloudPuppetRepository[Player])
+    private val repo = cacheHandler.getCache(50, CloudObjectRepository[Player]())
 
     private def addPlayer(player: Player): Unit = {
         val id          = player.id
         repo.postObject(id, player)
+        println(s"Added player $player !")
     }
 
     override def execute(implicit args: Array[String]): Unit = {
@@ -31,7 +31,7 @@ class PuppetCommand(cacheHandler: SharedCacheManager, supportIdentifier: String)
         order match {
             case "create" => createPlayer(args.drop(1)) //remove first arg which is obviously 'create'
             case "update" => updatePlayer(args.drop(1)) //remove first arg which is obviously 'update'
-            case "list"   => //println(s"players: $players")
+            case "list"   => println(s"players: ${repo.snapshotContent}")
             case "desc"   => describePlayerClass()
             case _        => throw CommandException("usage: player [create|update] [...]")
         }
@@ -69,29 +69,6 @@ class PuppetCommand(cacheHandler: SharedCacheManager, supportIdentifier: String)
         player.setY(y)
         player.name = name
         //println(s"Player is now $player")
-    }
-
-}
-
-object PuppetCommand {
-
-    case class Player(id: Int,
-                      owner: String,
-                      var name: String,
-                      var x: Long,
-                      var y: Long) extends Serializable {
-
-        def this(other: Player) = {
-            this(other.id, other.owner, other.name, other.x, other.y)
-        }
-
-        def getName: String = name
-
-        def setX(x: Long): Unit = this.x = x
-
-        def setY(y: Long): Unit = this.y = y
-
-        override def toString: String = s"Player($id, $owner, $name, $x, $y)"
     }
 
 }

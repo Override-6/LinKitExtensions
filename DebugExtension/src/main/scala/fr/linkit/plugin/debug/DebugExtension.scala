@@ -20,7 +20,7 @@ import fr.linkit.engine.local.concurrency.pool.{BusyWorkerPool, SimpleWorkerCont
 import fr.linkit.engine.local.resource.external.{LocalResourceFile, LocalResourceFolder}
 import fr.linkit.plugin.controller.ControllerExtension
 import fr.linkit.plugin.controller.cli.CommandManager
-import fr.linkit.plugin.debug.commands.{NetworkCommand, PuppetCommand, RemoteFSACommand}
+import fr.linkit.plugin.debug.commands.{NetworkCommand, PlayerCommand, RemoteFSACommand}
 
 class DebugExtension extends LinkitPlugin {
 
@@ -44,7 +44,7 @@ class DebugExtension extends LinkitPlugin {
         val folder = resources.getOrOpen[LocalResourceFolder]("MyFolder")
 
 
-        commandManager.register("player", new PuppetCommand(globalCache, testServerConnection.supportIdentifier))
+        commandManager.register("player", new PlayerCommand(globalCache, testServerConnection.supportIdentifier))
         commandManager.register("network", new NetworkCommand(getContext.listConnections.map(_.network)))
         commandManager.register("fsa", new RemoteFSACommand(getContext))
 
