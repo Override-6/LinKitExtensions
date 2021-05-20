@@ -12,13 +12,15 @@
 
 package fr.linkit.plugin.debug.commands
 
-import fr.linkit.api.connection.cache.repo.annotations.AnnotationHelper.MethodControl
+import fr.linkit.api.connection.cache.repo.annotations.MethodControl
 
-case class Player(@MethodControl(localOnly = true) id: Int,
-                  @MethodControl(localOnly = true) owner: String,
-                  @MethodControl(localOnly = true) var name: String,
-                  @MethodControl(localOnly = true) var x: Long,
-                  @MethodControl(localOnly = true) var y: Long) extends Serializable {
+import scala.annotation.meta.getter
+
+case class Player(@MethodControl(localOnly = true)@getter id: Int,
+                  @MethodControl(localOnly = true)@getter owner: String,
+                  @MethodControl(localOnly = true)@getter var name: String,
+                  @MethodControl(localOnly = true)@getter var x: Long,
+                  @MethodControl(localOnly = true)@getter var y: Long) extends Serializable {
 
     def this(other: Player) = {
         this(other.id, other.owner, other.name, other.x, other.y)
