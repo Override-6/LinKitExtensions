@@ -12,11 +12,13 @@
 
 package fr.linkit.plugin.debug.commands
 
-case class Player(id: Int,
-                  owner: String,
-                  var name: String,
-                  var x: Long,
-                  var y: Long) extends Serializable {
+import fr.linkit.api.connection.cache.repo.annotations.AnnotationHelper.MethodControl
+
+case class Player(@MethodControl(localOnly = true) id: Int,
+                  @MethodControl(localOnly = true) owner: String,
+                  @MethodControl(localOnly = true) var name: String,
+                  @MethodControl(localOnly = true) var x: Long,
+                  @MethodControl(localOnly = true) var y: Long) extends Serializable {
 
     def this(other: Player) = {
         this(other.id, other.owner, other.name, other.x, other.y)
@@ -24,9 +26,6 @@ case class Player(id: Int,
 
     def getName: String = name
 
-    def setX(x: Long): Unit = this.x = x
-
-    def setY(y: Long): Unit = this.y = y
-
+    @MethodControl(localOnly = true)
     override def toString: String = s"Player($id, $owner, $name, $x, $y)"
 }

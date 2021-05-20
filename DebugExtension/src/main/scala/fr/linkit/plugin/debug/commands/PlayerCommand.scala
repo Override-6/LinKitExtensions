@@ -31,7 +31,7 @@ class PlayerCommand(cacheHandler: SharedCacheManager, supportIdentifier: String)
         order match {
             case "create" => createPlayer(args.drop(1)) //remove first arg which is obviously 'create'
             case "update" => updatePlayer(args.drop(1)) //remove first arg which is obviously 'update'
-            case "list"   => println(s"players: ${repo.snapshotContent}")
+            case "list"   => println(s"players: ${repo.snapshotContent.array.map(_.puppet).mkString(", ")}")
             case "desc"   => describePlayerClass()
             case _        => throw CommandException("usage: player [create|update] [...]")
         }
@@ -65,8 +65,8 @@ class PlayerCommand(cacheHandler: SharedCacheManager, supportIdentifier: String)
         val y    = CommandUtils.getValue("y", player.y.toString, args).toInt
 
         //println(s"Updating player $player...")
-        player.setX(x)
-        player.setY(y)
+        player.x = x
+        player.y = y
         player.name = name
         //println(s"Player is now $player")
     }
