@@ -27,8 +27,6 @@ case class Player(@MC(ONLY_LOCAL) @getter id: Int,
         this(other.id, other.owner, other.name, other.x, other.y)
     }
 
-    def getName: String = name
-
-    @MC()
+    @MC(ONLY_LOCAL)
     override def toString: String = s"Player($id, $owner, $name, $x, $y)"
 }

@@ -60,7 +60,7 @@ class PlayerCommand(cacheHandler: SharedCacheManager, supportIdentifier: String)
         val id     = CommandUtils.getValue("id", args).toInt
         val player = repo.getOrElse(id, throw CommandException("Player does not exists"))
 
-        val name = CommandUtils.getValue("name", player.getName, args)
+        val name = CommandUtils.getValue("name", player.name, args)
         val x    = CommandUtils.getValue("x", player.x.toString, args).toInt
         val y    = CommandUtils.getValue("y", player.y.toString, args).toInt
 
