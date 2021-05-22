@@ -17,11 +17,11 @@ import fr.linkit.api.connection.cache.repo.annotations.{MethodControl => MC}
 
 import scala.annotation.meta.getter
 
-case class Player(@MC(ONLY_LOCAL) @getter id: Int,
-                  @MC(ONLY_LOCAL) @getter owner: String,
-                  @MC(ONLY_LOCAL) @getter var name: String,
-                  @MC(ONLY_LOCAL) @getter var x: Long,
-                  @MC(ONLY_LOCAL) @getter var y: Long) extends Serializable {
+case class Player(@(MC@getter)(ONLY_LOCAL) id: Int,
+                  @(MC@getter)(ONLY_LOCAL) owner: String,
+                  @(MC@getter)(ONLY_LOCAL) var name: String,
+                  @(MC@getter)(ONLY_LOCAL) var x: Long,
+                  @(MC@getter)(ONLY_LOCAL) var y: Long) extends Serializable {
 
     def this(other: Player) = {
         this(other.id, other.owner, other.name, other.x, other.y)
