@@ -16,13 +16,15 @@ import fr.linkit.api.connection.cache.SharedCacheManager
 import fr.linkit.engine.connection.cache.repo.CloudObjectRepository
 import fr.linkit.plugin.controller.cli.{CommandException, CommandExecutor, CommandUtils}
 
+import scala.collection.mutable.ListBuffer
+
 class PlayerCommand(cacheHandler: SharedCacheManager, supportIdentifier: String) extends CommandExecutor {
 
-    private val repo = cacheHandler.getCache(50, CloudObjectRepository[Player]())
+    private val repo    = cacheHandler.getCache(50, CloudObjectRepository[ListBuffer[Player]]())
+    private val players = repo.postObject(0, ListBuffer.empty[Player])
 
     private def addPlayer(player: Player): Unit = {
-        val id          = player.id
-        repo.postObject(id, player)
+        players += player
         println(s"Added player $player !")
     }
 
@@ -58,7 +60,7 @@ class PlayerCommand(cacheHandler: SharedCacheManager, supportIdentifier: String)
     private def updatePlayer(args: Array[String]): Unit = {
         implicit val usage: String = "usage: player update [id=?] <name=?|x=?|y=?>"
         val id     = CommandUtils.getValue("id", args).toInt
-        val player = repo.getOrElse(id, throw CommandException("Player does not exists"))
+        /*val player = players.find(_.)
 
         val name = CommandUtils.getValue("name", player.name, args)
         val x    = CommandUtils.getValue("x", player.x.toString, args).toInt
@@ -68,7 +70,7 @@ class PlayerCommand(cacheHandler: SharedCacheManager, supportIdentifier: String)
         player.x = x
         player.y = y
         player.name = name
-        //println(s"Player is now $player")
+        //println(s"Player is now $player")*/
     }
 
 }
