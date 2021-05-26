@@ -13,9 +13,13 @@
 package fr.linkit.plugin.debug.commands
 
 import fr.linkit.api.connection.cache.SharedCacheManager
+import fr.linkit.api.connection.cache.repo.annotations.InvocationKind
+import fr.linkit.api.connection.cache.repo.description.PuppetDescriptionBuilder
+import fr.linkit.api.connection.cache.repo.description.PuppetDescriptionBuilder.MethodControl
 import fr.linkit.engine.connection.cache.repo.CloudObjectRepository
 import fr.linkit.plugin.controller.cli.{CommandException, CommandExecutor, CommandUtils}
 
+import java.util
 import scala.collection.mutable.ListBuffer
 
 class PlayerCommand(cacheHandler: SharedCacheManager, supportIdentifier: String) extends CommandExecutor {
@@ -60,7 +64,7 @@ class PlayerCommand(cacheHandler: SharedCacheManager, supportIdentifier: String)
     private def updatePlayer(args: Array[String]): Unit = {
         implicit val usage: String = "usage: player update [id=?] <name=?|x=?|y=?>"
         val id     = CommandUtils.getValue("id", args).toInt
-        /*val player = players.find(_.)
+        val player = players.find(_.id == id).getOrElse(throw CommandException("Player not found."))
 
         val name = CommandUtils.getValue("name", player.name, args)
         val x    = CommandUtils.getValue("x", player.x.toString, args).toInt
@@ -70,7 +74,11 @@ class PlayerCommand(cacheHandler: SharedCacheManager, supportIdentifier: String)
         player.x = x
         player.y = y
         player.name = name
-        //println(s"Player is now $player")*/
+        //println(s"Player is now $player")
+    }
+
+    new PuppetDescriptionBuilder(repo.descriptions.getDescription[util.ArrayList[Player]]) {
+        annotateAll("find") by MethodControl(InvocationKind.ONLY_LOCAL)
     }
 
 }
