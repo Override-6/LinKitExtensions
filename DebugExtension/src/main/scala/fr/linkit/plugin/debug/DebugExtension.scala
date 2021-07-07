@@ -32,17 +32,15 @@ class DebugExtension extends LinkitPlugin {
         val commandManager = getFragmentOrAbort(classOf[ControllerExtension], classOf[CommandManager])
 
 
-        val pool       = WorkerPools.currentPool.get
+        //val pool       = WorkerPools.currentPool.get
         val controller = new SimpleWorkerController()
-        controller.pauseCurrentTask(2000)
+        controller.pauseCurrentTask(5000)
 
         val testServerConnection = getContext.getConnection("TestServer1").get
         val globalCache          = testServerConnection.network.cache
-        val resources            = getContext.getAppResources
 
-        val file = resources.getOrOpen[LocalResourceFolder]("Test.exe")
-        val folder = resources.getOrOpen[LocalResourceFolder]("MyFolder")
-
+        /*val file = resources.getOrOpen[LocalResourceFolder]("Test.exe")
+        val folder = resources.getOrOpen[LocalResourceFolder]("MyFolder")*/
 
         commandManager.register("player", new PlayerCommand(globalCache, testServerConnection.supportIdentifier))
         commandManager.register("network", new NetworkCommand(getContext.listConnections.map(_.network)))
