@@ -26,6 +26,7 @@ class PlayerCommand(cacheHandler: SharedCacheManager, supportIdentifier: String)
 
     private val repo    = cacheHandler.getCache(50, CloudObjectRepository[ListBuffer[Player]]())
     private val players = repo.postObject(0, ListBuffer.empty[Player])
+    println(s"players = ${players}")
 
     private def addPlayer(player: Player): Unit = {
         players += player
