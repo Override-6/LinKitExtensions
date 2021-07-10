@@ -12,17 +12,13 @@
 
 package fr.linkit.plugin.debug
 
-import fr.linkit.api.connection.cache.repo.description.PuppetDescription
 import fr.linkit.api.local.plugin.LinkitPlugin
 import fr.linkit.api.local.system.AppLogger
-import fr.linkit.engine.connection.cache.repo.generation.WrapperCompilationRequestFactory
 import fr.linkit.engine.local.concurrency.pool.SimpleWorkerController
 import fr.linkit.engine.local.resource.external.{LocalResourceFile, LocalResourceFolder}
 import fr.linkit.plugin.controller.ControllerExtension
 import fr.linkit.plugin.controller.cli.CommandManager
-import fr.linkit.plugin.debug.commands.{NetworkCommand, Player, PlayerCommand, RemoteFSACommand}
-
-import scala.collection.mutable.ListBuffer
+import fr.linkit.plugin.debug.commands.{NetworkCommand, PlayerCommand, RemoteFSACommand}
 
 class DebugPlugin extends LinkitPlugin {
 
@@ -39,20 +35,13 @@ class DebugPlugin extends LinkitPlugin {
         val testServerConnection = getContext.getConnection("TestServer1").get
         val globalCache          = testServerConnection.network.cache
 
-        val compilationCenter = getContext.compilerCenter
-        val requestFactory = new WrapperCompilationRequestFactory
-        getContext.runLater {
-            /*compilationCenter.generate {
-                requestFactory.makeMultiRequest(Seq(PuppetDescription(classOf[ListBuffer[_]]), PuppetDescription(classOf[Player])))
-            }.getResult*/
-            //commandManager.register("player", new PlayerCommand(globalCache, testServerConnection.supportIdentifier))
-            commandManager.register("network", new NetworkCommand(getContext.listConnections.map(_.network)))
-            commandManager.register("fsa", new RemoteFSACommand(getContext))
-        }
+        commandManager.register("player", new PlayerCommand(globalCache, testServerConnection.supportIdentifier))
+        commandManager.register("network", new NetworkCommand(getContext.listConnections.map(_.network)))
+        commandManager.register("fsa", new RemoteFSACommand(getContext))
 
         val resources = getContext.getAppResources
-        val file = resources.getOrOpen[LocalResourceFile]("Test.exe")
-        val folder = resources.getOrOpen[LocalResourceFolder]("MyFolder")
+        val file      = resources.getOrOpen[LocalResourceFile]("Test.exe")
+        val folder    = resources.getOrOpen[LocalResourceFolder]("MyFolder")
 
         AppLogger.trace("Debug extension enabled.")
     }
