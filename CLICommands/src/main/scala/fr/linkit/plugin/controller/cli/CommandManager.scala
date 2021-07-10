@@ -41,6 +41,10 @@ class CommandManager(procrastinator: Procrastinator) extends PluginFragment {
     def perform(command: String): Unit = {
         if (command == null)
             return
+        if (command.startsWith("help")) {
+            commands.foreach(println)
+            return
+        }
         val args = parseLine(command.trim())
         val cmd  = command.takeWhile(c => !Character.isWhitespace(c)).toLowerCase
         if (!commands.contains(cmd)) {

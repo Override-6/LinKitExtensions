@@ -16,7 +16,7 @@ import fr.linkit.api.connection.cache.SharedCacheManager
 import fr.linkit.api.connection.cache.repo.annotations.InvocationKind
 import fr.linkit.api.connection.cache.repo.description.PuppetDescriptionBuilder
 import fr.linkit.api.connection.cache.repo.description.PuppetDescriptionBuilder.MethodControl
-import fr.linkit.engine.connection.cache.repo.CloudObjectRepository
+import fr.linkit.engine.connection.cache.repo.CloudObjectCenter
 import fr.linkit.plugin.controller.cli.{CommandException, CommandExecutor, CommandUtils}
 
 import java.util
@@ -24,7 +24,7 @@ import scala.collection.mutable.ListBuffer
 
 class PlayerCommand(cacheHandler: SharedCacheManager, supportIdentifier: String) extends CommandExecutor {
 
-    private val repo    = cacheHandler.getCache(50, CloudObjectRepository[ListBuffer[Player]]())
+    private val repo    = cacheHandler.getCache(50, CloudObjectCenter[ListBuffer[Player]]())
     private val players = repo.postObject(0, ListBuffer.empty[Player])
     println(s"players = ${players}")
 
