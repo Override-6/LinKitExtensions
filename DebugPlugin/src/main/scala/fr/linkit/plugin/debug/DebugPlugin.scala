@@ -14,11 +14,15 @@ package fr.linkit.plugin.debug
 
 import fr.linkit.api.local.plugin.LinkitPlugin
 import fr.linkit.api.local.system.AppLogger
+import fr.linkit.engine.connection.cache.repo.generation.{PuppetWrapperClassGenerator, WrappersClassResource}
+import fr.linkit.engine.local.LinkitApplication.getProperty
 import fr.linkit.engine.local.concurrency.pool.SimpleWorkerController
 import fr.linkit.engine.local.resource.external.{LocalResourceFile, LocalResourceFolder}
 import fr.linkit.plugin.controller.ControllerExtension
 import fr.linkit.plugin.controller.cli.CommandManager
-import fr.linkit.plugin.debug.commands.{NetworkCommand, PlayerCommand, RemoteFSACommand}
+import fr.linkit.plugin.debug.commands.{NetworkCommand, Player, PlayerCommand, RemoteFSACommand}
+
+import scala.collection.mutable.ListBuffer
 
 class DebugPlugin extends LinkitPlugin {
 
@@ -34,6 +38,14 @@ class DebugPlugin extends LinkitPlugin {
         controller.pauseCurrentTask(5000)
         val testServerConnection = getContext.getConnection("TestServer1").get
         val globalCache          = testServerConnection.network.cache
+
+        import LocalResourceFolder._
+        val resource  = getContext.getAppResources
+                .get[LocalResourceFolder](getProperty("compilation.working_dir.classes"))
+                .getEntry
+                .getRepresentation[WrappersClassResource]
+        val generator = new PuppetWrapperClassGenerator(getContext.compilerCenter, resource)
+        generator.preGenerateClasses(Seq(classOf[ListBuffer[_]], classOf[Player]))
 
         commandManager.register("player", new PlayerCommand(globalCache, testServerConnection.supportIdentifier))
         commandManager.register("network", new NetworkCommand(getContext.listConnections.map(_.network)))
