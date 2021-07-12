@@ -24,19 +24,19 @@ import scala.collection.mutable.ListBuffer
 
 class PlayerCommand(cacheHandler: SharedCacheManager, supportIdentifier: String) extends CommandExecutor {
 
-    private val repo    = cacheHandler.getCache(50, DefaultEngineObjectCenter[util.ArrayList[Player]]())
-    private val players = repo.findObject(0).getOrElse(repo.postObject(0, new util.ArrayList[Player]()))
+    private val repo    = cacheHandler.getCache(50, DefaultEngineObjectCenter[ListBuffer[Player]]())
+    private val players = repo.findObject(0).getOrElse(repo.postObject(0, ListBuffer.empty[Player]))
     println(s"players = ${players}")
 
     private def addPlayer(player: Player): Unit = {
-        players add player
+        players += player
         println(s"Added player $player in $players")
     }
 
     override def execute(implicit args: Array[String]): Unit = {
         val order = if (args.length == 0) "" else args(0)
-        println(s"players.toSeq = ${players}")
-        println(s"players.getChoreographer.isMethodExecutionForcedToLocal = ${players.getChoreographer.isMethodExecutionForcedToLocal}")
+        //println(s"players.toSeq = ${players}")
+        //println(s"players.getChoreographer.isMethodExecutionForcedToLocal = ${players.getChoreographer.isMethodExecutionForcedToLocal}")
         order match {
             case "create" => createPlayer(args.drop(1)) //remove first arg which is obviously 'create'
             case "update" => updatePlayer(args.drop(1)) //remove first arg which is obviously 'update'
@@ -64,12 +64,11 @@ class PlayerCommand(cacheHandler: SharedCacheManager, supportIdentifier: String)
         classOf[Player].getDeclaredFields.foreach(println)
     }
 
-    private def playerArray: Array[Player] = players.toArray(new Array[Player](0))
 
     private def updatePlayer(args: Array[String]): Unit = {
         implicit val usage: String = "usage: player update [id=?] <name=?|x=?|y=?>"
         val id     = CommandUtils.getValue("id", args).toInt
-        val player = playerArray.find(_.id == id).getOrElse(throw CommandException("Player not found."))
+        val player = players.find(_.id == id).getOrElse(throw CommandException("Player not found."))
 
         val name = CommandUtils.getValue("name", player.name, args)
         val x    = CommandUtils.getValue("x", player.x.toString, args).toInt
