@@ -42,7 +42,7 @@ class CommandManager(procrastinator: Procrastinator) extends PluginFragment {
         if (command == null)
             return
         if (command.startsWith("help")) {
-            commands.foreach(println)
+            commands.foreach(cmd => println(cmd._1 + " -> " + cmd._2.getClass.getSimpleName))
             return
         }
         val args = parseLine(command.trim())

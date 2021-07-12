@@ -22,6 +22,7 @@ import fr.linkit.plugin.controller.ControllerExtension
 import fr.linkit.plugin.controller.cli.CommandManager
 import fr.linkit.plugin.debug.commands.{NetworkCommand, Player, PlayerCommand, RemoteFSACommand}
 
+import java.util
 import scala.collection.mutable.ListBuffer
 
 class DebugPlugin extends LinkitPlugin {
@@ -45,7 +46,7 @@ class DebugPlugin extends LinkitPlugin {
                 .getEntry
                 .getRepresentation[WrappersClassResource]
         val generator = new PuppetWrapperClassGenerator(getContext.compilerCenter, resource)
-        generator.preGenerateClasses(Seq(classOf[ListBuffer[_]], classOf[Player]))
+        generator.preGenerateClasses(Seq(classOf[util.ArrayList[_]], classOf[Player]))
 
         commandManager.register("player", new PlayerCommand(globalCache, testServerConnection.supportIdentifier))
         commandManager.register("network", new NetworkCommand(getContext.listConnections.map(_.network)))
