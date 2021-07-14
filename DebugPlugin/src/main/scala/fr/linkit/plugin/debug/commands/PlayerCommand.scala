@@ -13,24 +13,25 @@
 package fr.linkit.plugin.debug.commands
 
 import fr.linkit.api.connection.cache.SharedCacheManager
-import fr.linkit.api.connection.cache.repo.annotations.InvocationKind
-import fr.linkit.api.connection.cache.repo.description.PuppetDescriptionBuilder
-import fr.linkit.api.connection.cache.repo.description.PuppetDescriptionBuilder.MethodControl
+import fr.linkit.api.connection.cache.repo.description.annotation.InvocationKind
 import fr.linkit.engine.connection.cache.repo.DefaultEngineObjectCenter
+import fr.linkit.engine.connection.cache.repo.description.WrapperBehaviorBuilder
+import fr.linkit.engine.connection.cache.repo.description.WrapperBehaviorBuilder.MethodControl
+import fr.linkit.engine.connection.cache.repo.description.annotation.AnnotationBasedMemberBehaviorFactory
 import fr.linkit.plugin.controller.cli.{CommandException, CommandExecutor, CommandUtils}
 
-import java.util
 import scala.collection.mutable.ListBuffer
 
 class PlayerCommand(cacheHandler: SharedCacheManager, supportIdentifier: String) extends CommandExecutor {
 
+    private val bhv = new WrapperBehaviorBuilder[ListBuffer[Player]](new AnnotationBasedMemberBehaviorFactory()) {
+        annotateAll by MethodControl(InvocationKind.ONLY_LOCAL)
+        annotateAll("+=") and "addOne" by MethodControl(InvocationKind.LOCAL_AND_REMOTES, false, "1")
+    }.build
     private val repo    = cacheHandler.getCache(50, DefaultEngineObjectCenter[ListBuffer[Player]]())
-    private val players = repo.findObject(0).getOrElse(repo.postObject(0, ListBuffer.empty[Player]))
-    println(s"players = ${players}")
-
-    private def addPlayer(player: Player): Unit = {
-        players += player
-        println(s"Added player $player in $players")
+    private val players = repo.findObject(0).getOrElse(repo.postObject(0, ListBuffer.empty[Player], bhv))
+    players.getChoreographer.forceLocalInvocation {
+        println(s"players = ${players}")
     }
 
     override def execute(implicit args: Array[String]): Unit = {
@@ -40,7 +41,7 @@ class PlayerCommand(cacheHandler: SharedCacheManager, supportIdentifier: String)
         order match {
             case "create" => createPlayer(args.drop(1)) //remove first arg which is obviously 'create'
             case "update" => updatePlayer(args.drop(1)) //remove first arg which is obviously 'update'
-            case "list"   => println(s"players: ${repo.snapshotContent.array.map(_.puppet).mkString(", ")}")
+            case "list"   => players.getChoreographer.forceLocalInvocation(println(s"players: $players"))
             case "desc"   => describePlayerClass()
             case _        => throw CommandException("usage: player [create|update] [...]")
         }
@@ -56,7 +57,8 @@ class PlayerCommand(cacheHandler: SharedCacheManager, supportIdentifier: String)
         val player = Player(id, supportIdentifier, name, x, y)
 
         //println(s"Created $player ! (identifier = $id)")
-        addPlayer(player)
+        players += player
+        println(s"Added player $player in $players")
     }
 
     private def describePlayerClass(): Unit = {
@@ -79,10 +81,6 @@ class PlayerCommand(cacheHandler: SharedCacheManager, supportIdentifier: String)
         player.y = y
         player.name = name
         //println(s"Player is now $player")
-    }
-
-    new PuppetDescriptionBuilder(repo.descriptions.getDescription[util.ArrayList[Player]]) {
-        annotateAll("find") by MethodControl(InvocationKind.ONLY_LOCAL)
     }
 
 }
