@@ -45,8 +45,6 @@ class DebugPlugin extends LinkitPlugin {
                 .get[LocalResourceFolder](getProperty("compilation.working_dir.classes"))
                 .getEntry
                 .getRepresentation[WrappersClassResource]
-        val generator = new PuppetWrapperClassGenerator(getContext.compilerCenter, resource)
-        generator.preGenerateClasses(Seq(classOf[ListBuffer[_]], classOf[Player]))
 
         commandManager.register("player", new PlayerCommand(globalCache, testServerConnection.supportIdentifier))
         commandManager.register("network", new NetworkCommand(getContext.listConnections.map(_.network)))

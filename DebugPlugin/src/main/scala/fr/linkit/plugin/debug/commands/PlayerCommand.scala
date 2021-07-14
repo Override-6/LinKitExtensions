@@ -24,15 +24,15 @@ import scala.collection.mutable.ListBuffer
 
 class PlayerCommand(cacheHandler: SharedCacheManager, supportIdentifier: String) extends CommandExecutor {
 
-    private val bhv = new WrapperBehaviorBuilder[ListBuffer[Player]](new AnnotationBasedMemberBehaviorFactory()) {
+    private val bhv     = new WrapperBehaviorBuilder[ListBuffer[Player]](new AnnotationBasedMemberBehaviorFactory()) {
         annotateAll by MethodControl(InvocationKind.ONLY_LOCAL)
         annotateAll("+=") and "addOne" by MethodControl(InvocationKind.LOCAL_AND_REMOTES, false, "1")
     }.build
     private val repo    = cacheHandler.getCache(50, DefaultEngineObjectCenter[ListBuffer[Player]]())
     private val players = repo.findObject(0).getOrElse(repo.postObject(0, ListBuffer.empty[Player], bhv))
-    players.getChoreographer.forceLocalInvocation {
-        println(s"players = ${players}")
-    }
+    println(s"players = ${players}")
+    /*println(s"players.getClass.getDeclaredFields = ${players.getClass.getDeclaredFields.mkString("Array(", ", ", ")")}")
+    println(s"LOL")*/
 
     override def execute(implicit args: Array[String]): Unit = {
         val order = if (args.length == 0) "" else args(0)
@@ -65,7 +65,6 @@ class PlayerCommand(cacheHandler: SharedCacheManager, supportIdentifier: String)
         //println(s"Class ${classOf[Player]}:")
         classOf[Player].getDeclaredFields.foreach(println)
     }
-
 
     private def updatePlayer(args: Array[String]): Unit = {
         implicit val usage: String = "usage: player update [id=?] <name=?|x=?|y=?>"
