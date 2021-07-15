@@ -20,9 +20,13 @@ import fr.linkit.engine.connection.cache.repo.description.WrapperBehaviorBuilder
 import fr.linkit.engine.connection.cache.repo.description.annotation.AnnotationBasedMemberBehaviorFactory
 import fr.linkit.plugin.controller.cli.{CommandException, CommandExecutor, CommandUtils}
 
+import java.util.Scanner
 import scala.collection.mutable.ListBuffer
 
 class PlayerCommand(cacheHandler: SharedCacheManager, supportIdentifier: String) extends CommandExecutor {
+
+    /*println("Press enter to continue...")
+    new Scanner(System.in).nextLine()*/
 
     private val bhv     = new WrapperBehaviorBuilder[ListBuffer[Player]](new AnnotationBasedMemberBehaviorFactory()) {
         annotateAll by MethodControl(InvocationKind.ONLY_LOCAL)
@@ -39,6 +43,9 @@ class PlayerCommand(cacheHandler: SharedCacheManager, supportIdentifier: String)
         //println(s"players.toSeq = ${players}")
         //println(s"players.getChoreographer.isMethodExecutionForcedToLocal = ${players.getChoreographer.isMethodExecutionForcedToLocal}")
         order match {
+            case "test" =>
+                println(s"Thread.currentThread() = ${Thread.currentThread()}")
+                println(s"players.getClass.getDeclaredFields = ${players.getClass.getDeclaredFields}")
             case "create" => createPlayer(args.drop(1)) //remove first arg which is obviously 'create'
             case "update" => updatePlayer(args.drop(1)) //remove first arg which is obviously 'update'
             case "list"   => players.getChoreographer.forceLocalInvocation(println(s"players: $players"))
