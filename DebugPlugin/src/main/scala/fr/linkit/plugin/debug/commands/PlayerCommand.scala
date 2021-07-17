@@ -15,12 +15,11 @@ package fr.linkit.plugin.debug.commands
 import fr.linkit.api.connection.cache.SharedCacheManager
 import fr.linkit.api.connection.cache.repo.description.annotation.InvocationKind
 import fr.linkit.engine.connection.cache.repo.DefaultEngineObjectCenter
-import fr.linkit.engine.connection.cache.repo.description.WrapperBehaviorBuilder
 import fr.linkit.engine.connection.cache.repo.description.WrapperBehaviorBuilder.MethodControl
 import fr.linkit.engine.connection.cache.repo.description.annotation.AnnotationBasedMemberBehaviorFactory
+import fr.linkit.engine.connection.cache.repo.description.{TreeViewDefaultBehavior, WrapperBehaviorBuilder}
 import fr.linkit.plugin.controller.cli.{CommandException, CommandExecutor, CommandUtils}
 
-import java.util.Scanner
 import scala.collection.mutable.ListBuffer
 
 class PlayerCommand(cacheHandler: SharedCacheManager, supportIdentifier: String) extends CommandExecutor {
@@ -28,12 +27,16 @@ class PlayerCommand(cacheHandler: SharedCacheManager, supportIdentifier: String)
     /*println("Press enter to continue...")
     new Scanner(System.in).nextLine()*/
 
-    private val bhv     = new WrapperBehaviorBuilder[ListBuffer[Player]](new AnnotationBasedMemberBehaviorFactory()) {
+    private val tree = new TreeViewDefaultBehavior(new AnnotationBasedMemberBehaviorFactory())
+    new WrapperBehaviorBuilder[ListBuffer[Player]](tree) {
         annotateAll by MethodControl(InvocationKind.ONLY_LOCAL)
-        annotateAll("+=") and "addOne" by MethodControl(InvocationKind.LOCAL_AND_REMOTES, false, "1")
+        annotateAll("+=") and "addOne" by MethodControl(InvocationKind.LOCAL_AND_REMOTES, synchronizedParams = Seq(true))
     }.build
-    private val repo    = cacheHandler.getCache(50, DefaultEngineObjectCenter[ListBuffer[Player]]())
-    private val players = repo.findObject(0).getOrElse(repo.postObject(0, ListBuffer.empty[Player], bhv))
+    new WrapperBehaviorBuilder[Player](tree) {
+        annotate("toString") by MethodControl(InvocationKind.ONLY_LOCAL)
+    }.build
+    private val repo    = cacheHandler.getCache(50, DefaultEngineObjectCenter[ListBuffer[Player]](tree))
+    private val players = repo.findObject(0).getOrElse(repo.postObject(0, ListBuffer.empty[Player]))
     println(s"players = ${players}")
     /*println(s"players.getClass.getDeclaredFields = ${players.getClass.getDeclaredFields.mkString("Array(", ", ", ")")}")
     println(s"LOL")*/
@@ -43,12 +46,12 @@ class PlayerCommand(cacheHandler: SharedCacheManager, supportIdentifier: String)
         //println(s"players.toSeq = ${players}")
         //println(s"players.getChoreographer.isMethodExecutionForcedToLocal = ${players.getChoreographer.isMethodExecutionForcedToLocal}")
         order match {
-            case "test" =>
+            case "test"   =>
                 println(s"Thread.currentThread() = ${Thread.currentThread()}")
                 println(s"players.getClass.getDeclaredFields = ${players.getClass.getDeclaredFields}")
             case "create" => createPlayer(args.drop(1)) //remove first arg which is obviously 'create'
             case "update" => updatePlayer(args.drop(1)) //remove first arg which is obviously 'update'
-            case "list"   => players.getChoreographer.forceLocalInvocation(println(s"players: $players"))
+            case "list"   => println(s"players: $players")
             case "desc"   => describePlayerClass()
             case _        => throw CommandException("usage: player [create|update] [...]")
         }
@@ -82,11 +85,11 @@ class PlayerCommand(cacheHandler: SharedCacheManager, supportIdentifier: String)
         val x    = CommandUtils.getValue("x", player.x.toString, args).toInt
         val y    = CommandUtils.getValue("y", player.y.toString, args).toInt
 
-        //println(s"Updating player $player...")
+        println(s"Updating player $player...")
         player.x = x
         player.y = y
         player.name = name
-        //println(s"Player is now $player")
+        println(s"Player is now $player")
     }
 
 }

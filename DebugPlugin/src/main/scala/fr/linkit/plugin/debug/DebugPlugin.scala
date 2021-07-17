@@ -20,7 +20,7 @@ import fr.linkit.engine.local.concurrency.pool.SimpleWorkerController
 import fr.linkit.engine.local.resource.external.{LocalResourceFile, LocalResourceFolder}
 import fr.linkit.plugin.controller.ControllerExtension
 import fr.linkit.plugin.controller.cli.CommandManager
-import fr.linkit.plugin.debug.commands.{NetworkCommand, Player, PlayerCommand, RemoteFSACommand}
+import fr.linkit.plugin.debug.commands.{NetworkCommand, PlayerCommand, RemoteFSACommand}
 
 import java.util
 import scala.collection.mutable.ListBuffer
