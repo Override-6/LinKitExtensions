@@ -46,7 +46,7 @@ class DebugPlugin extends LinkitPlugin {
                 .getEntry
                 .getRepresentation[WrappersClassResource]
 
-        commandManager.register("player", new PlayerCommand(globalCache, testServerConnection.supportIdentifier))
+        commandManager.register("player", new PlayerCommand(globalCache, testServerConnection.currentIdentifier))
         commandManager.register("network", new NetworkCommand(getContext.listConnections.map(_.network)))
         commandManager.register("fsa", new RemoteFSACommand(getContext))
 

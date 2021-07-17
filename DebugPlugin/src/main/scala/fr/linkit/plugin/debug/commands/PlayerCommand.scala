@@ -22,7 +22,7 @@ import fr.linkit.plugin.controller.cli.{CommandException, CommandExecutor, Comma
 
 import scala.collection.mutable.ListBuffer
 
-class PlayerCommand(cacheHandler: SharedCacheManager, supportIdentifier: String) extends CommandExecutor {
+class PlayerCommand(cacheHandler: SharedCacheManager, currentIdentifier: String) extends CommandExecutor {
 
     /*println("Press enter to continue...")
     new Scanner(System.in).nextLine()*/
@@ -64,7 +64,7 @@ class PlayerCommand(cacheHandler: SharedCacheManager, supportIdentifier: String)
         val name   = CommandUtils.getValue("name", args)
         val x      = CommandUtils.getValue("x", args).toInt
         val y      = CommandUtils.getValue("y", args).toInt
-        val player = Player(id, supportIdentifier, name, x, y)
+        val player = Player(id, currentIdentifier, name, x, y)
 
         //println(s"Created $player ! (identifier = $id)")
         players += player
