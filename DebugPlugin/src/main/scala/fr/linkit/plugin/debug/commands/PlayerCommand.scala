@@ -35,6 +35,7 @@ class PlayerCommand(cacheHandler: SharedCacheManager, currentIdentifier: String)
     new WrapperBehaviorBuilder[Player](tree) {
         annotate("toString") by MethodControl(InvocationKind.ONLY_LOCAL)
     }.build
+
     private val repo    = cacheHandler.getCache(50, DefaultEngineObjectCenter[ListBuffer[Player]](tree))
     private val players = repo.findObject(0).getOrElse(repo.postObject(0, ListBuffer.empty[Player]))
     println(s"players = ${players}")
